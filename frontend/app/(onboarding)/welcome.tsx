@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 
 const WelcomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   return (
-    <View className="flex-1 bg-black justify-center items-center px-6">
+    <View className="flex-1 bg-primary justify-center items-center px-6">
       <Image className="w-36 h-36 mb-8" />
       <Text className="text-white text-4xl font-bold mb-10">Welcome to GRIND</Text>
 

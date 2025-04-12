@@ -3,12 +3,19 @@ import React, { useState } from "react";
 import Feather from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Link } from "expo-router";
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { useRouter } from "expo-router";
+
+
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+
 
   return (
-    <View className="flex-1 bg-black px-6 justify-center">
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <View className="flex-1 bg-primary px-6 justify-center">
       {/* Header */}
       <Text className="text-white text-5xl font-extrabold">Welcome</Text>
       <Text className="text-white text-5xl font-extrabold">to GRIND</Text>
@@ -37,6 +44,7 @@ const Login = () => {
 
       {/* Password */}
       <Text className="text-gray-400 mb-1">PASSWORD</Text>
+      
       <View className="flex-row items-center border-b border-gray-700 mb-2 pb-2">
         <Feather name="lock" size={18} color="#9CA3AF" />
         <TextInput
@@ -53,6 +61,8 @@ const Login = () => {
           />
         </TouchableOpacity>
       </View>
+    
+     
 
       <Text className="text-sm text-gray-400 mb-6">
         Have you forgotten your password?{" "}
@@ -61,7 +71,8 @@ const Login = () => {
 
       {/* Login Button */}
       <TouchableOpacity className="border border-white py-3 rounded-md mb-4">
-        <Text className="text-white text-center tracking-widest">LOG IN</Text>
+        {/* <Text className="text-white text-center tracking-widest">LOG IN</Text> */}
+        <Link className="text-white text-center tracking-widest" href="/(settings)/userSettings">Log In</Link>
       </TouchableOpacity>
 
       <Text className="text-white text-center mb-4">
@@ -95,6 +106,7 @@ const Login = () => {
         <Text className="underline">Privacy Policy!</Text>
       </Text>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
