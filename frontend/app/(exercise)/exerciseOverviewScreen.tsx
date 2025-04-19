@@ -9,6 +9,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const stretches = [
   'Hamstring Stretches',
@@ -23,30 +24,35 @@ const ExerciseOverviewScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ScrollView className="flex-1 bg-black">
+    <SafeAreaView className='flex-1 bg-primary'>
+<ScrollView className="flex-1 bg-primary mt-3">
       {/* Cover Image */}
-      <View className="relative h-80">
-        <ImageBackground
-          source={{ uri: 'https://picsum.photos/id/1015/1600/900' }}
-          className="h-full w-full justify-end"
-          imageStyle={{ borderBottomLeftRadius: 32, borderBottomRightRadius: 32 }}
-        >
-          <View className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent rounded-b-[32px]" />
+      <View className="relative h-80 rounded-b-[32px] overflow-hidden shadow-lg shadow-black/40">
+  <ImageBackground
+    source={{ uri: 'https://picsum.photos/id/1015/1600/900' }}
+    className="h-full w-full rounded-3xl shadow-lg shadow-black/30"
+    imageStyle={{ borderBottomLeftRadius: 32, borderBottomRightRadius: 32, borderTopLeftRadius: 32 , borderTopRightRadius:32 }}
+  >
+    {/* Gradient Overlay */}
+    <View className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent rounded-b-[32px]" />
 
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            className="absolute top-14 left-4 z-10"
-          >
-            <Ionicons name="chevron-back" size={28} color="white" />
-          </TouchableOpacity>
+    {/* Back Button */}
+    <TouchableOpacity
+      onPress={() => navigation.goBack()}
+      className="absolute top-5 left-4 z-10 p-2 bg-black/30 rounded-full"
+    >
+      <Ionicons name="chevron-back" size={24} color="white" />
+    </TouchableOpacity>
 
-          <View className="px-6 pb-7">
-            <Text className="text-white text-4xl font-bold leading-tight">
-              Stretching{'\n'}Exercises
-            </Text>
-          </View>
-        </ImageBackground>
-      </View>
+    {/* Heading */}
+    <View className="px-6 pb-7">
+      <Text className="text-white text-4xl font-bold leading-tight">
+        Stretching{'\n'}Exercises
+      </Text>
+    </View>
+  </ImageBackground>
+</View>
+
 
       {/* Main Content */}
       <View className="px-6 pt-8 pb-12 space-y-10">
@@ -91,6 +97,8 @@ const ExerciseOverviewScreen = () => {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </SafeAreaView>
+    
   );
 };
 

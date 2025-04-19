@@ -11,7 +11,7 @@ const FinalWelcomeScreen = () => {
   }, []);
 
   return (
-    <View className="flex-1 bg-black justify-center items-center px-6">
+    <View className="flex-1 bg-primary justify-center items-center px-6">
       <LottieView
         source={{
           uri: 'https://raw.githubusercontent.com/react-native-lottie/react-native-lottie/master/example/assets/8857-lottie-flower.json',

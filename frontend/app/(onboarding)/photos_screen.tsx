@@ -53,7 +53,7 @@ const PhotosScreen = () => {
   );
 
   return (
-    <View className="flex-1 bg-black px-6 pt-12">
+    <View className="flex-1 bg-primary px-6 pt-12">
       <Text className="text-white text-2xl font-bold mb-2">Add your best photos</Text>
       <Text className="text-gray-400 mb-6">Upload up to 6 photos</Text>
 

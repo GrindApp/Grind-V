@@ -13,6 +13,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import StarRating from 'react-native-star-rating-widget';
 
 const GymProfileScreen = () => {
@@ -64,17 +65,19 @@ const GymProfileScreen = () => {
   };
 
   return (
-    <>
-      <ScrollView className="flex-1 bg-[#111111]">
+
+    <SafeAreaView className='flex-1 bg-primary'>
+<>
+      <ScrollView className="flex-1">
         <Image
           source={{ uri: 'https://i.imgur.com/vSdq7U2.jpg' }}
           className="w-full h-64 rounded-b-2xl"
           resizeMode="cover"
         />
 
-        <View className="p-5">
+        <View className="p-5 bg-primary">
           {/* Header */}
-          <View className="flex-row items-center justify-between mb-2">
+          <View className="flex-row items-center justify-between mb-2 bg-primary">
             <View className="flex-row items-center">
               <Ionicons name="star" size={18} color="#facc15" />
               <Text className="text-white text-base ml-1 font-medium">5.0</Text>
@@ -136,7 +139,7 @@ const GymProfileScreen = () => {
         </View>
 
         {/* Footer Buttons */}
-        <View className="flex-row justify-between px-5 py-4 bg-[#111111]">
+        <View className="flex-row justify-between px-5 py-4 bg-primary">
           <TouchableOpacity className="flex-1 p-3 bg-[#1f2937] items-center rounded-xl mr-2">
             <Text className="text-white font-semibold">DIRECTIONS</Text>
           </TouchableOpacity>
@@ -208,6 +211,8 @@ const GymProfileScreen = () => {
         </KeyboardAvoidingView>
       </Modal>
     </>
+    </SafeAreaView>
+    
   );
 };
 

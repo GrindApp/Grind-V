@@ -11,6 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { Search, X } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const categories = [
   { id: '1', name: 'STRENGHT TRAINING', image: 'https://picsum.photos/id/1016/1600/900' },
@@ -37,9 +38,10 @@ const ExploreScreen = () => {
   );
 
   return (
-    <KeyboardAvoidingView
+    <SafeAreaView className='flex-1 bg-primary'>
+<KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      className="flex-1 bg-black px-4 pt-12"
+      className="flex-1 bg-primary px-4 pt-12"
     >
       <Text className="text-white text-3xl font-bold mb-5">Explore Now</Text>
 
@@ -101,6 +103,8 @@ const ExploreScreen = () => {
         )}
       />
     </KeyboardAvoidingView>
+    </SafeAreaView>
+    
   );
 };
 

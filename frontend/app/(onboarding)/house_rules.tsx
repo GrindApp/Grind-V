@@ -15,7 +15,7 @@ const HouseRulesScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-black px-6 pt-16 pb-10">
+    <View className="flex-1 bg-primary px-6 pt-16 pb-10">
       <Text className="text-white text-3xl font-bold mb-6">Welcome to GRIND</Text>
       <Text className="text-gray-400 text-lg mb-4">Before you get started, please read our house rules:</Text>
 

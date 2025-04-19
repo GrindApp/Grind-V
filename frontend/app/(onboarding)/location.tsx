@@ -29,7 +29,7 @@ const LocationScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-black px-6 justify-center items-center">
+    <View className="flex-1 bg-primary px-6 justify-center items-center">
       <Feather name="map-pin" size={64} color="white" className="mb-4" />
       <Text className="text-white text-2xl font-bold mb-4 text-center">Enable location</Text>
       <Text className="text-gray-400 text-center mb-10">

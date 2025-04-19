@@ -32,7 +32,7 @@ const PhoneNumberScreen: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 bg-black px-6 justify-center">
+    <View className="flex-1 bg-primary px-6 justify-center">
       <Text className="text-white text-lg mb-4">LOG IN WITH MOBILE</Text>
 
       <Text className="text-gray-400 mb-1">PREFIX</Text>

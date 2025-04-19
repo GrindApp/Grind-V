@@ -151,7 +151,7 @@ const GymBuddyScreen = () => {
   };
 
   const renderCard = (card: GymBuddy) => (
-    <View className="rounded-3xl overflow-hidden h-[80%] shadow-lg shadow-black bg-neutral-900" style={styles.cardShadow}>
+    <View className="rounded-3xl overflow-hidden h-[80%] shadow-lg shadow-black bg-primary" style={styles.cardShadow}>
       <View className="w-full h-[70%] relative">
         <Image source={{ uri: card.image }} className="w-full h-full" resizeMode="cover" />
         <LinearGradient
@@ -222,9 +222,9 @@ const GymBuddyScreen = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-black">
+    <SafeAreaView className="flex-1 bg-primary">
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
-      <View className="flex-1 relative">
+      <View className="flex-1 relative bg-primary">
         {!isOutOfCards ? (
           <Swiper
             ref={swiperRef}

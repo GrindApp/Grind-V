@@ -17,7 +17,7 @@ const GymLevelScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-black px-6 justify-center">
+    <View className="flex-1 bg-primary px-6 justify-center">
       <Text className="text-white text-2xl font-bold mb-6">What's your gym level?</Text>
 
       {LEVELS.map((level) => (

@@ -37,7 +37,7 @@ const TagsScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-black px-6 pt-12">
+    <View className="flex-1 bg-primary px-6 pt-12">
       <Text className="text-white text-2xl font-bold mb-4">What are you into?</Text>
       <Text className="text-gray-400 mb-4">Pick as many as you like</Text>
 

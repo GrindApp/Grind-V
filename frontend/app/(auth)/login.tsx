@@ -66,7 +66,10 @@ const Login = () => {
 
       <Text className="text-sm text-gray-400 mb-6">
         Have you forgotten your password?{" "}
+        <Link href= "/components/ForgotPassword">
         <Text className="text-red-500">Click here</Text>
+        </Link>
+        
       </Text>
 
       {/* Login Button */}

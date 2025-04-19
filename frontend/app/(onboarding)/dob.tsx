@@ -13,24 +13,36 @@ const DOBScreen = () => {
     if (selectedDate) setDate(selectedDate);
   };
 
+  // 🧠 Function to check if user is at least 18
+  const isEighteenOrOlder = (dob: Date | null): boolean => {
+    if (!dob) return false;
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear();
+    const hasHadBirthdayThisYear =
+      today.getMonth() > dob.getMonth() ||
+      (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+
+    return age > 18 || (age === 18 && hasHadBirthdayThisYear);
+  };
+
+  const isValid = isEighteenOrOlder(date);
+
   const formattedDate = date
     ? `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
         .toString()
         .padStart(2, "0")}/${date.getFullYear()}`
     : "";
 
-  const isValid = !!date;
-
   const handleNext = () => {
     if (isValid) {
       router.push("/gender");
     } else {
-      alert("Please select your date of birth.");
+      alert("You must be at least 18 years old to continue.");
     }
   };
 
   return (
-    <View className="flex-1 bg-black px-6 justify-center">
+    <View className="flex-1 bg-primary px-6 justify-center">
       <Text className="text-white text-2xl font-bold mb-6">
         When's your birthday?
       </Text>
