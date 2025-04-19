@@ -3,9 +3,9 @@ import {
   View,
   Text,
   ScrollView,
-  Image,
   TouchableOpacity,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -17,9 +17,10 @@ const ExerciseDetailScreen = () => {
 
       {/* Header Image */}
       <Image
-        source={{ uri: 'https://picsum.photos/id/1015/1600/900' }}
-        className="h-60 w-full rounded-3xl shadow-lg shadow-black/30"
-        resizeMode="cover"
+        source={'https://picsum.photos/id/1015/1600/900'}
+        style={{ height: 240, width: '100%', borderRadius: 24, shadowColor: 'black', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 4 }, shadowRadius: 10 }}
+  contentFit="cover"
+  transition={300}
       />
 
       {/* Content */}

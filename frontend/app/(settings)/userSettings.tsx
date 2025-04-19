@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Image } from 'expo-image';
+
 import {
   View,
   Text,
@@ -16,7 +18,7 @@ import {
   Ionicons,
   FontAwesome5,
 } from "@expo/vector-icons";
-import { Image } from "react-native";
+
 import * as ImagePicker from "expo-image-picker";
 import { Entypo } from "@expo/vector-icons";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -108,11 +110,10 @@ const SettingsScreen = () => {
           <View className="relative">
             <Image
               source={
-                profileImage
-                  ? { uri: profileImage }
-                  : { uri: "https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" }
-              }
-              className="w-20 h-20 rounded-full"
+                profileImage || "https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" }
+
+                style={{ width: 80, height: 80, borderRadius: 40 }}
+
             />
             <TouchableOpacity
               onPress={pickImage}

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  Image,
   ScrollView,
   TouchableOpacity,
   Modal,
@@ -12,6 +11,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Image } from 'expo-image';
+
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StarRating from 'react-native-star-rating-widget';
@@ -69,11 +70,13 @@ const GymProfileScreen = () => {
     <SafeAreaView className='flex-1 bg-primary'>
 <>
       <ScrollView className="flex-1">
-        <Image
-          source={{ uri: 'https://i.imgur.com/vSdq7U2.jpg' }}
-          className="w-full h-64 rounded-b-2xl"
-          resizeMode="cover"
-        />
+      <Image
+  source="https://i.imgur.com/vSdq7U2.jpg"
+  style={{ width: '100%', height: 256, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}
+  contentFit="cover"
+  transition={300}
+/>
+
 
         <View className="p-5 bg-primary">
           {/* Header */}

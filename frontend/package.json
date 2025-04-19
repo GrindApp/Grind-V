@@ -45,6 +45,7 @@
     "react-native-country-picker-modal": "^2.0.0",
     "react-native-deck-swiper": "^2.0.17",
     "react-native-elements": "^3.4.3",
+    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-gifted-charts": "^1.4.60",
     "react-native-modal-datetime-picker": "^18.0.0",
@@ -58,7 +59,8 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "styled-components": "^6.1.17",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "expo-image": "~2.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

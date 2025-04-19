@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
-  Image,
   Dimensions,
   Pressable,
   SafeAreaView,
@@ -10,6 +9,7 @@ import {
   Animated,
   StyleSheet,
 } from 'react-native';
+import { Image } from 'expo-image';
 import Swiper from 'react-native-deck-swiper';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -153,7 +153,9 @@ const GymBuddyScreen = () => {
   const renderCard = (card: GymBuddy) => (
     <View className="rounded-3xl overflow-hidden h-[80%] shadow-lg shadow-black bg-primary" style={styles.cardShadow}>
       <View className="w-full h-[70%] relative">
-        <Image source={{ uri: card.image }} className="w-full h-full" resizeMode="cover" />
+        <Image source={card.image }  style={{ width: '100%', height: '100%' }}
+  contentFit="cover"
+  transition={300}/>
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.95)']}
           className="absolute bottom-0 left-0 right-0 h-40"
