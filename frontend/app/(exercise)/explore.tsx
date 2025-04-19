@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Search, X } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SearchBar from '../components/SearchBar';
 
 const categories = [
   { id: '1', name: 'STRENGHT TRAINING', image: 'https://picsum.photos/id/1016/1600/900' },
@@ -47,7 +48,7 @@ const ExploreScreen = () => {
 
       {/* Search Bar */}
       <View className="relative mb-6">
-        <View className="flex-row items-center bg-neutral-800 rounded-full px-4 py-3">
+        {/* <View className="flex-row items-center bg-neutral-800 rounded-full px-4 py-3">
           <Search color="gray" size={20} />
           <TextInput
             value={search}
@@ -61,7 +62,32 @@ const ExploreScreen = () => {
               <X color="gray" />
             </TouchableOpacity>
           )}
-        </View>
+        </View> */}
+
+<SearchBar
+  value={search}
+  onChange={handleSearch}
+  onClear={() => {
+    setSearch('');
+    setShowResults(false);
+     
+  }}
+  placeholder="Search by gym name, gym location..."
+/>
+
+{showResults && (
+  <View className="absolute top-[100px] left-0 right-0 bg-neutral-900 rounded-xl shadow-lg z-10 max-h-48">
+    {filteredResults.map((result, index) => (
+      <Text
+        key={index}
+        className="text-white px-4 py-3 border-b border-neutral-700"
+      >
+        {result}
+      </Text>
+    ))}
+  </View>
+)}
+
 
         {/* Floating Dropdown */}
         {showResults && (
