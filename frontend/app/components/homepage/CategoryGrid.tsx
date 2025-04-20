@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Dimensions, StyleSheet } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const categories = [
@@ -15,26 +15,56 @@ const categories = [
 
 const CategoryGrid = () => {
   return (
-    <View className="my-4 px-4">
-      <Text className="text-white text-lg font-semibold mb-2">Your Type</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Your Type</Text>
 
       <FlatList
         data={categories}
         numColumns={4}
         keyExtractor={(item) => item.id}
         scrollEnabled={false}
+        columnWrapperStyle={styles.row}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            className="flex-1 m-2 items-center justify-center bg-[#2C2C2E] p-3 rounded-xl"
-            activeOpacity={0.7}
-          >
+          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             {item.icon}
-            <Text className="text-xs text-white text-center mt-2">{item.label}</Text>
+            <Text style={styles.label}>{item.label}</Text>
           </TouchableOpacity>
         )}
       />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 16,
+    paddingHorizontal: 16,
+  },
+  title: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  row: {
+    justifyContent: 'space-between',
+  },
+  card: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#2C2C2E',
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    borderRadius: 12,
+    margin: 4,
+    minWidth: (Dimensions.get('window').width - 64) / 4, // responsive width
+  },
+  label: {
+    color: 'white',
+    fontSize: 10,
+    textAlign: 'center',
+    marginTop: 6,
+  },
+});
 
 export default CategoryGrid;

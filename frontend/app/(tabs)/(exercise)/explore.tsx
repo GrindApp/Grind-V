@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Search, X } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '@/app/components/SearchBar';
 
 const categories = [
   { id: '1', name: 'STRENGHT TRAINING', image: 'https://picsum.photos/id/1016/1600/900' },
