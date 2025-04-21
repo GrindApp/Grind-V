@@ -5,6 +5,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Link } from "expo-router";
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useRouter } from "expo-router";
+import { supabase } from "@/lib/supabase";
 
 
 

@@ -17,6 +17,7 @@ import RatingArenas from '../components/homepage/RatingArenas';
 import CategoryGrid from '../components/homepage/CategoryGrid';
 import GymList from '../components/homepage/GymList';
 import Sidebar from '../components/sideBar';
+import { useRouter } from "expo-router";
 
 const { width: screenWidth } = Dimensions.get('window');
 const SIDEBAR_WIDTH = screenWidth * 0.8;
@@ -26,6 +27,8 @@ const HomeScreen = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const router = useRouter();
 
   const sections = [
     { key: 'activity', render: () => <ActivityCarousel /> },
@@ -132,7 +135,13 @@ const HomeScreen = () => {
         <TouchableOpacity onPress={handleOpenSidebar}>
           <Ionicons name="menu" size={26} color="white" />
         </TouchableOpacity>
-        <View style={{ width: 26 }} />
+       
+    <Animated.Text style={styles.headerTitle}>GRIND</Animated.Text>
+ 
+
+    <TouchableOpacity onPress={() => router.push("/(chat)/friendList")}>
+    <Ionicons name="chatbubble-outline" size={24} color="white" />
+  </TouchableOpacity>
       </View>
 
       <FlatList
@@ -235,7 +244,23 @@ const styles = StyleSheet.create({
     width: 4,
     backgroundColor: 'rgba(255,255,255,0.2)',
     borderRadius: 2,
-  }
+  },
+
+  headerTitleWrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: -1, // behind the icons
+  },
+  
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: 'white',
+    letterSpacing: 1,
+  },
 });
 
 export default HomeScreen;
