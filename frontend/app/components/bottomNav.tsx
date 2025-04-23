@@ -52,9 +52,21 @@ const BottomNav: React.FC = () => {
     color={isActive('/explore') ? '#FF3B30' : '#D1D1D6'}
   />
   <Text className={`text-xs mt-1 ${isActive('/explore') ? 'text-red-500' : 'text-gray-400'}`}>
-    Search
+    Explore
   </Text>
 </TouchableOpacity>
+
+<TouchableOpacity onPress={() => router.push('/explore')} className="items-center">
+  <Feather
+    name="activity"
+    size={22}
+    color={isActive('/explore') ? '#FF3B30' : '#D1D1D6'}
+  />
+  <Text className={`text-xs mt-1 ${isActive('/explore') ? 'text-red-500' : 'text-gray-400'}`}>
+    Excercies
+  </Text>
+</TouchableOpacity>
+
 
       </View>
     </SafeAreaView>

@@ -2,15 +2,20 @@ import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const EditProfileScreen = () => {
+    const navigation = useNavigation();
   return (
     <SafeAreaView className="flex-1 bg-[#1C1C1E] px-5">
       {/* Header */}
-      <View className="flex-row items-center mt-2 mb-6">
-        <Ionicons name="arrow-back" size={24} color="white" />
-        <Text className="text-white text-xl font-semibold ml-4">Edit Your Profile</Text>
-      </View>
+      <TouchableOpacity
+    onPress={() => navigation.goBack()}
+    className="flex-row items-center mt-2 mb-6"
+  >
+    <Ionicons name="arrow-back" size={24} color="white" />
+    <Text className="text-white text-xl font-semibold ml-4">Edit Your Profile</Text>
+  </TouchableOpacity>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 50 }}>
         {/* Profile Pictures */}

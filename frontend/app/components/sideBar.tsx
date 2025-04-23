@@ -40,6 +40,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
               <Text className="text-white text-base ml-3">Gym Buddies</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity onPress={()=>router.push("/(settings)/savedGym")} className="flex-row items-center py-3">
+              <Ionicons name="save" size={22} color="white" />
+              <Text className="text-white text-base ml-3">My OG Collection</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={()=>router.push("/(settings)/EditProfileScreen")}  className="flex-row items-center py-3">
               <Feather name="settings" size={22} color="white" />
               <Text className="text-white text-base ml-3">Settings</Text>

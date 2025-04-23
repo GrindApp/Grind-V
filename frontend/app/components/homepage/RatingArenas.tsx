@@ -46,7 +46,7 @@ const RatingArenas = () => {
               resizeMode="cover"
             />
             <View className="p-2">
-              <Text className="text-white text-sm font-semibold">{item.name}</Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" className="text-white text-sm font-semibold">{item.name}</Text>
               <Text className="text-gray-400 text-xs mt-1">{item.distance}</Text>
               <Text className="text-yellow-400 text-xs mt-1">{item.rating}</Text>
             </View>

@@ -6,9 +6,9 @@ import LottieView from 'lottie-react-native';
 const FinalWelcomeScreen = () => {
   const router = useRouter();
 
-  useEffect(() => {
-    setTimeout(() => router.replace('/(auth)/login'), 3000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => router.replace('/(auth)/login'), 3000);
+  // }, []);
 
   return (
     <View className="flex-1 bg-primary justify-center items-center px-6">
@@ -26,7 +26,7 @@ const FinalWelcomeScreen = () => {
       </Text>
 
       <TouchableOpacity
-        onPress={() => router.replace('/(auth)/login')}
+        onPress={() => router.replace('/(tabs)/HomeScreen')}
         className="bg-white py-3 px-6 rounded-lg"
       >
         <Text className="text-black font-semibold text-center">Start Exploring</Text>

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 type Buddy = {
   id: string;
@@ -43,6 +44,7 @@ const initialData = {
 };
 
 const GymBuddyScreen = () => {
+  const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState<'requests' | 'added'>('requests');
   const [buddies, setBuddies] = useState(initialData);
   const swipeableRefs = useRef<{ [key: string]: Swipeable | null }>({});
@@ -93,8 +95,10 @@ const GymBuddyScreen = () => {
 
   const renderHeader = () => (
     <View className="flex-row items-center px-4 py-4">
+       <TouchableOpacity onPress={() => navigation.goBack()} className="flex-row items-center">
       <Ionicons name="arrow-back" size={24} color="#fff" />
       <Text className="text-white text-base ml-2">My Buddies</Text>
+    </TouchableOpacity>
     </View>
   );
 

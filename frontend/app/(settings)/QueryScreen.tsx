@@ -10,18 +10,20 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 const QueryScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [query, setQuery] = useState('');
+   const navigation = useNavigation();
 
   return (
     <SafeAreaView className="flex-1 bg-[#1C1C1E] px-6">
       {/* Header */}
       <View className="flex-row items-center mt-2 mb-6">
-        <TouchableOpacity>
+        <TouchableOpacity  onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <Text className="text-white text-xl font-semibold ml-4">Submit Your Query</Text>

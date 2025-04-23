@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -77,7 +78,8 @@ const sampleMessages: Message[] = [
   },
 ];
 
-const ChatDetailScreen: React.FC<ChatDetailProps> = ({ route, navigation }) => {
+const ChatDetailScreen: React.FC<ChatDetailProps> = ({ route }) => {
+  const navigation = useNavigation();
   // If no route params are provided, use default values
   const contact = route?.params || {
     name: 'Rajesh Shukla',
@@ -291,7 +293,7 @@ const ChatDetailScreen: React.FC<ChatDetailProps> = ({ route, navigation }) => {
       <View className="flex-row items-center px-4 py-3 border-b border-neutral-800">
         <TouchableOpacity 
           className="mr-3"
-          onPress={() => navigation?.goBack()}
+          onPress={() => navigation.goBack()}
         >
           <Ionicons name="chevron-back" size={24} color="white" />
         </TouchableOpacity>

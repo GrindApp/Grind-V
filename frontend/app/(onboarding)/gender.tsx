@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const GENDERS = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
 
@@ -16,38 +17,84 @@ const GenderScreen = () => {
     }
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
-    <View className="flex-1 bg-primary px-6 justify-center">
-      <Text className="text-white text-2xl font-bold mb-6">What's your gender?</Text>
-
-      {GENDERS.map((gender) => (
-        <TouchableOpacity
-          key={gender}
-          onPress={() => setSelectedGender(gender)}
-          className={`border rounded-lg px-4 py-3 mb-3 ${
-            selectedGender === gender ? 'border-white bg-white' : 'border-gray-700'
-          }`}
+    <SafeAreaView className="flex-1 bg-primary">
+      <StatusBar barStyle="light-content" />
+      
+      <View className="flex-1 px-6 py-8">
+        {/* Back Button */}
+        <TouchableOpacity 
+          onPress={handleBack}
+          className="w-10 h-10 rounded-full mb-6 flex items-center justify-center"
         >
-          <Text
-            className={`text-center text-base font-medium ${
-              selectedGender === gender ? 'text-black' : 'text-white'
-            }`}
-          >
-            {gender}
-          </Text>
+          <Ionicons name="chevron-back" size={28} color="white" />
         </TouchableOpacity>
-      ))}
+        
+        {/* Header */}
+        <View className="mb-10">
+          <Text className="text-white text-3xl font-bold">
+            What's your gender?
+          </Text>
+          <Text className="text-gray-300 mt-2">
+            This helps us personalize your experience
+          </Text>
+        </View>
 
-      <TouchableOpacity
-        className={`mt-6 py-3 rounded-lg ${selectedGender ? 'bg-white' : 'bg-gray-700'}`}
-        onPress={handleNext}
-        disabled={!selectedGender}
-      >
-        <Text className={`text-center font-semibold ${selectedGender ? 'text-black' : 'text-gray-400'}`}>
-          Next
-        </Text>
-      </TouchableOpacity>
-    </View>
+        {/* Gender Options */}
+        <View className="mb-6 space-y-4">
+          {GENDERS.map((gender) => (
+            <TouchableOpacity
+              key={gender}
+              onPress={() => setSelectedGender(gender)}
+              activeOpacity={0.7}
+              className={`border rounded-xl px-5 py-4 flex-row justify-between items-center ${
+                selectedGender === gender 
+                  ? 'border-white bg-white/10' 
+                  : 'border-gray-700'
+              }`}
+            >
+              <Text
+                className={`text-lg font-medium ${
+                  selectedGender === gender ? 'text-white' : 'text-gray-300'
+                }`}
+              >
+                {gender}
+              </Text>
+              
+              {selectedGender === gender && (
+                <View className="bg-white rounded-full p-1">
+                  <Ionicons name="checkmark" size={18} color="#111" />
+                </View>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Next Button */}
+        <View className="mt-auto pt-6">
+          <TouchableOpacity
+            className={`py-4 rounded-xl ${
+              selectedGender ? 'bg-white' : 'bg-gray-700'
+            }`}
+            onPress={handleNext}
+            disabled={!selectedGender}
+            activeOpacity={0.8}
+          >
+            <Text 
+              className={`text-center font-bold text-lg ${
+                selectedGender ? 'text-primary' : 'text-gray-400'
+              }`}
+            >
+              Continue
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 

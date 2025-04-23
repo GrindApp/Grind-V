@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useRouter, usePathname } from 'expo-router';
 import {
   View,
   Text,
@@ -47,7 +49,9 @@ const initialChats = [
 ];
 
 const ChatScreen = () => {
+  const router = useRouter();
   const [chats, setChats] = useState(initialChats);
+  const navigation = useNavigation();
   const [activeRow, setActiveRow] = useState<string | null>(null);
   const swipeableRefs = useRef<{ [key: string]: Swipeable | null }>({});
 
@@ -92,6 +96,7 @@ const ChatScreen = () => {
       <TouchableOpacity 
   className="flex-row items-center py-4 px-5 bg-[#1f1f23]"
   activeOpacity={0.7}
+  onPress={() => router.push("/(chat)/chatPage")}
 >
         <Image
           source={{ uri: item.image }}
@@ -119,7 +124,7 @@ const ChatScreen = () => {
       
       {/* Header */}
       <View className="pt-14 pb-4 px-5 flex-row items-center border-b border-neutral-800">
-        <TouchableOpacity className="flex-row items-center">
+        <TouchableOpacity className="flex-row items-center"  onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={24} color="white" />
           <Text className="text-white text-lg font-medium ml-1">
             {chats.length > 0 ? 'Chat' : 'My Buddies'}

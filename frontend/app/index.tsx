@@ -16,6 +16,15 @@ export default function Index() {
       <Link href={"/(tabs)/(exercise)/exercise-details"}>Explore</Link>
       <Link href={"/(chat)/friendList"}>Friends</Link>
       <Link href={"/(chat)/chatPage"}>Chat</Link>
+      <Link href={"/(onboarding)/dob"}>dob</Link>
+      <Link href={"/(onboarding)/gender"}>Gender</Link>
+      <Link href={"/(onboarding)/gym_level"}>Level</Link>
+      <Link href={"/(onboarding)/tags"}>tags</Link>
+      <Link href={"/(onboarding)/photos_screen"}>photos</Link>
+      <Link href={"/(onboarding)/house_rules"}>house</Link>
+      <Link href={"/(onboarding)/name"}>name</Link>
+      
+      
     </View>
   );
 }

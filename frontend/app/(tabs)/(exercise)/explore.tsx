@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { useRouter, usePathname } from 'expo-router';
 import { Search, X } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBar from '@/app/components/SearchBar';
@@ -26,6 +27,7 @@ const categories = [
 const mockSearchResults = ['Manmohan Arora', 'Man', 'Manoj', 'Mandir'];
 
 const ExploreScreen = () => {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [showResults, setShowResults] = useState(false);
 
@@ -111,7 +113,7 @@ const ExploreScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
         renderItem={({ item }) => (
-          <Pressable className="mb-4 rounded-2xl overflow-hidden">
+          <Pressable className="mb-4 rounded-2xl overflow-hidden " onPress={() => router.push("/exerciseOverviewScreen")}>
             {({ pressed }) => (
               <ImageBackground
                 source={{ uri: item.image }}

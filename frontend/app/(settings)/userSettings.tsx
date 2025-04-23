@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Image } from 'expo-image';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   View,
@@ -46,6 +47,7 @@ const interestsList = [
 ];
 
 const SettingsScreen = () => {
+  const navigation = useNavigation();
   const [distance, setDistance] = useState(10);
   const [discovery, setDiscovery] = useState(false);
   const [showMe, setShowMe] = useState<"Men" | "Women" | "Both">("Men");
@@ -96,7 +98,12 @@ const SettingsScreen = () => {
   return (
     <SafeAreaView className="bg-primary flex-1">
       <ScrollView className="flex-1 bg-primary px-4 py-6">
-        <Text className="text-white text-2xl font-bold mb-6">Settings</Text>
+      <View className="flex-row items-center mb-6">
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+      <Ionicons name="arrow-back" size={24} color="white" />
+    </TouchableOpacity>
+    <Text className="text-white text-2xl font-bold ml-4">Settings</Text>
+  </View>
 
         {/* Profile Photo */}
         <View className="flex-row items-center justify-between mb-6 bg-[#1E1E1E] px-4 py-4 rounded-xl">

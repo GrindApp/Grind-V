@@ -187,9 +187,9 @@ const HomeScreen = () => {
           ]}
           {...panResponder.panHandlers}
         >
-          <View style={styles.swipeIndicator}>
+          {/* <View style={styles.swipeIndicator}>
             <View style={styles.swipeIndicatorBar} />
-          </View>
+          </View> */}
           <Sidebar onClose={handleCloseSidebar} />
         </Animated.View>
       )}

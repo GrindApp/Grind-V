@@ -63,7 +63,7 @@ const GymList = () => {
     <TouchableOpacity className="mb-4 bg-[#2C2C2E] rounded-xl overflow-hidden mx-4">
       <Image source={item.image} className="h-36 w-full" resizeMode="cover" />
       <View className="p-3">
-        <Text className="text-white text-base font-semibold">{item.name}</Text>
+      <Text numberOfLines={1} ellipsizeMode="tail" className="text-white text-sm font-semibold">{item.name}</Text>
         <Text className="text-gray-400 text-sm mt-1">{item.distance}</Text>
         <Text className="text-gray-400 text-sm mt-1">{item.tags}</Text>
       </View>
