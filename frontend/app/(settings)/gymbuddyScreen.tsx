@@ -248,7 +248,7 @@ const GymBuddyScreen = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-black">
+    <SafeAreaView className="flex-1 bg-primary">
       <GestureHandlerRootView className="flex-1">
         {renderHeader()}
         {renderTabs()}

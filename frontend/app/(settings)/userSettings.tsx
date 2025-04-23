@@ -226,7 +226,7 @@ const SettingsScreen = () => {
   ];
 
   return (
-    <SafeAreaView className="bg-black flex-1">
+    <SafeAreaView className="bg-primary flex-1">
       <ScrollView className="flex-1 px-5 py-6">
         {/* Header */}
         <View className="flex-row justify-between items-center mb-8">

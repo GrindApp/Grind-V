@@ -56,12 +56,16 @@ const categories = [
   },
 ];
 
-const popularSearches = ["Weight Loss", "6-Pack Abs", "HIIT", "Full Body", "Pilates"];
+const popularSearches = ["Weight Loss", "6-Pack Abs", "HIIT", "Full Body"];
 const mockSearchResults = ["Manmohan Arora", "Man", "Manoj", "Mandir", "Max Fitness"];
 
 const ExploreScreen = () => {
   const [search, setSearch] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<"ongoing" | "all">("all");
+
+const ongoingPlans = categories.slice(0, 3); 
+
 
   // Memoize filtered results to avoid unnecessary recomputation
   const filteredResults = useMemo(() => {
@@ -95,28 +99,35 @@ const ExploreScreen = () => {
       activeOpacity={0.8}
     >
       <ImageBackground
-        source={{ uri: item.image }}
-        className="h-40"
-        imageStyle={{ borderRadius: 16 }}
-      >
-        <View className="flex-1 justify-end">
-          <View className="bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
-            <View className="flex-row justify-between items-center">
-              <View>
-                <Text className="text-white text-lg font-bold">
-                  {item.name}
-                </Text>
-                <Text className="text-gray-300 text-sm mt-1">
-                  {item.workouts} workouts
-                </Text>
-              </View>
-              <View className="bg-white/20 rounded-full p-2 backdrop-blur-md">
-                <ArrowRight size={16} color="#fff" />
-              </View>
-            </View>
-          </View>
+  source={{ uri: item.image }}
+  className="h-44"
+  imageStyle={{ borderRadius: 16 }}
+>
+  <View className="flex-1 justify-end">
+    {/* Add a solid black overlay with opacity */}
+    <View
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, 0.6)', // Black with 60% opacity
+        borderBottomLeftRadius: 16,
+        borderBottomRightRadius: 16,
+        padding: 16,
+      }}
+    >
+      <View className="flex-row justify-between items-center">
+        <View>
+          <Text className="text-white text-lg font-bold">{item.name}</Text>
+          <Text className="text-gray-300 text-sm mt-1">
+            {item.workouts} workouts
+          </Text>
         </View>
-      </ImageBackground>
+        <View className="bg-white/20 rounded-full p-2">
+          <ArrowRight size={16} color="#fff" />
+        </View>
+      </View>
+    </View>
+  </View>
+</ImageBackground>
+
     </TouchableOpacity>
   );
 
@@ -136,7 +147,7 @@ const ExploreScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <SafeAreaView className="flex-1 bg-black">
+      <SafeAreaView className="flex-1 bg-primary">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1"
@@ -181,41 +192,65 @@ const ExploreScreen = () => {
 
             {/* Popular Searches Tags */}
             {!showResults && (
-              <View className="mb-6">
-                <Text className="text-white font-semibold mb-3">Popular Searches</Text>
-                <View className="flex-row flex-wrap">
-                  {popularSearches.map((item, index) => (
-                    <TouchableOpacity
-                      key={`popular-${index}`}
-                      className="bg-neutral-800 px-4 py-2 rounded-full mr-2 mb-2"
-                      onPress={() => handleSearch(item)}
-                    >
-                      <Text className="text-white">{item}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+              <View className="mb-4">
+              <Text className="text-white font-medium text-base mb-2">Popular Searches</Text>
+              <View className="flex-row flex-wrap">
+                {popularSearches.map((item, index) => (
+                  <TouchableOpacity
+                    key={`popular-${index}`}
+                    className="bg-neutral-800 px-3 py-1.5 rounded-full mr-2 mb-1"
+                    onPress={() => handleSearch(item)}
+                  >
+                    <Text className="text-white text-sm">{item}</Text>
+                  </TouchableOpacity>
+                ))}
               </View>
+            </View>
+            
             )}
 
             {/* Categories Section */}
             {!showResults && (
               <View className="flex-1">
-                <View className="flex-row justify-between items-center mb-4">
-                  <Text className="text-white font-semibold text-lg">Workout Categories</Text>
-                  <TouchableOpacity>
-                    <Text className="text-blue-500">See All</Text>
-                  </TouchableOpacity>
-                </View>
+                <View className="items-center mb-4 mt-3">
+  <Text className="text-white font-bold text-2xl">Workout Categories</Text>
+</View>
 
-                <FlatList
-                  data={categories}
-                  keyExtractor={(item) => item.id}
-                  renderItem={renderCategoryItem}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: 40 }}
-                  initialNumToRender={4}
-                  maxToRenderPerBatch={4}
-                />
+<View className="items-center mb-4">
+  <View className="flex-row bg-neutral-800 rounded-full p-0.5">
+    {["ongoing", "all"].map((tab) => (
+      <Pressable
+        key={tab}
+        onPress={() => setSelectedTab(tab as "ongoing" | "all")}
+        className={`px-4 py-1.5 rounded-full ${
+          selectedTab === tab ? "bg-white" : ""
+        }`}
+      >
+        <Text
+          className={`text-xs font-medium ${
+            selectedTab === tab ? "text-black" : "text-white"
+          }`}
+        >
+          {tab === "ongoing" ? "Ongoing" : "All Plans"}
+        </Text>
+      </Pressable>
+    ))}
+  </View>
+</View>
+
+
+
+
+<FlatList
+  data={selectedTab === "ongoing" ? ongoingPlans : categories}
+  keyExtractor={(item) => item.id}
+  renderItem={renderCategoryItem}
+  showsVerticalScrollIndicator={false}
+  contentContainerStyle={{ paddingBottom: 40 }}
+  initialNumToRender={4}
+  maxToRenderPerBatch={4}
+/>
+
               </View>
             )}
           </View>
