@@ -12,6 +12,8 @@ import { Ionicons, Feather } from '@expo/vector-icons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+
 
 const { width } = Dimensions.get('window');
 
@@ -92,6 +94,7 @@ const ChatScreen = () => {
       <TouchableOpacity 
   className="flex-row items-center py-4 px-5 bg-[#1f1f23]"
   activeOpacity={0.7}
+  onPress={() => router.push(`/(chat)/chatPage`)}
 >
         <Image
           source={{ uri: item.image }}

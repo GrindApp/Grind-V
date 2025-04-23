@@ -8,54 +8,65 @@ const BottomNav: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  console.log('Current pathname:', pathname);
-
   const isActive = (route: string) => pathname === route;
 
-
+  const navItems = [
+    {
+      name: 'Home',
+      route: '/HomeScreen',
+      icon: (active: boolean) => (
+        <Ionicons
+          name={active ? 'home' : 'home-outline'}
+          size={22}
+          color={active ? '#FF3B30' : '#8E8E93'}
+        />
+      ),
+    },
+    {
+      name: 'Gym Buddy',
+      route: '/gymBuddy',
+      icon: (active: boolean) => (
+        <Ionicons
+          name={active ? 'people' : 'people-outline'}
+          size={22}
+          color={active ? '#FF3B30' : '#8E8E93'}
+        />
+      ),
+    },
+    {
+      name: 'Search',
+      route: '/explore',
+      icon: (active: boolean) => (
+        <Feather
+          name="search"
+          size={22}
+          color={active ? '#FF3B30' : '#8E8E93'}
+        />
+      ),
+    },
+  ];
 
   return (
-    <SafeAreaView className='bg-primary'  edges={['bottom']}>
-      <View className="flex-row justify-around items-center py-2 bg-primary">
-        {/* Home */}
-        <TouchableOpacity onPress={() => router.push('/HomeScreen')} className="items-center">
-  <Ionicons
-    name="home-outline"
-    size={22}
-    color={isActive('/HomeScreen') ? '#FF3B30' : '#D1D1D6'}
-  />
-  <Text className={`text-xs mt-1 ${isActive('/HomeScreen') ? 'text-red-500' : 'text-gray-400'}`}>
-    Home
-  </Text>
-</TouchableOpacity>
-
-        
-
-        {/* Gym Buddy */}
-        <TouchableOpacity onPress={() => router.push('/gymBuddy')} className="items-center">
-  <Ionicons
-    name="people-outline"
-    size={22}
-    color={isActive('/gymBuddy') ? '#FF3B30' : '#D1D1D6'}
-  />
-  <Text className={`text-xs mt-1 ${isActive('/gymBuddy') ? 'text-red-500' : 'text-gray-400'}`}>
-    Gym Buddy
-  </Text>
-</TouchableOpacity>
-
-
-        {/* Search */}
-        <TouchableOpacity onPress={() => router.push('/explore')} className="items-center">
-  <Feather
-    name="search"
-    size={22}
-    color={isActive('/explore') ? '#FF3B30' : '#D1D1D6'}
-  />
-  <Text className={`text-xs mt-1 ${isActive('/explore') ? 'text-red-500' : 'text-gray-400'}`}>
-    Search
-  </Text>
-</TouchableOpacity>
-
+    <SafeAreaView className="bg-gray-900" edges={['bottom']}>
+      <View className="flex-row justify-around items-center py-2 px-4 bg-gray-900 border-t border-gray-800">
+        {navItems.map((item) => {
+          const active = isActive(item.route);
+          return (
+            <TouchableOpacity
+              key={item.route}
+              onPress={() => router.push(item.route)}
+              className={`items-center py-2 ${active ? 'bg-gray-800 rounded-xl' : ''}`}
+              style={{ minWidth: 70 }}
+            >
+              {item.icon(active)}
+              <Text
+                className={`text-xs font-medium mt-1 ${active ? 'text-red-500' : 'text-gray-400'}`}
+              >
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </SafeAreaView>
   );
