@@ -8,8 +8,6 @@ const BottomNav: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  console.log('Current pathname:', pathname);
-
   const isActive = (route: string) => pathname === route;
 
 

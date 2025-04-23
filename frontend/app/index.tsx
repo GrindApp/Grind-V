@@ -8,8 +8,8 @@ export default function Index() {
       <Link href="/login">Login</Link>
       <Link href={"/(onboarding)/welcome"}>Welcome</Link>
       <Link href={"/(settings)/userSettings"}>ProfileEdit</Link>
-      <Link href={"/(tabs)/HomeScreen"}>Home</Link>
-      <Link href={"/(tabs)/gymProfile"}>Gym</Link>
+      <Link href={"/(tabs)/(home)/HomeScreen"}>Home</Link>
+      <Link href={"/(tabs)/(home)/gymProfile"}>Gym</Link>
       <Link href={"/(tabs)/(gymbuddy)/gymBuddy"}>GymBuddy</Link>
       <Link href={"/(tabs)/(exercise)/exerciseOverviewScreen"}>Exercise</Link>
       <Link href={"/(tabs)/(exercise)/exercise-details"}>Exercise Detail</Link>

@@ -1,131 +1,202 @@
-import React from 'react';
-import { View, Text, Dimensions, ViewStyle, TextStyle } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { View, Text, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { PieChart } from 'react-native-gifted-charts';
-import { CheckBox } from 'react-native-elements';
-import styled from 'styled-components/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import clsx from 'clsx';
 
 const { width } = Dimensions.get('window');
+const CARD_WIDTH = width - 32;
 
-// Styled components
-const StyledView = styled(View)<{ style?: ViewStyle }>`
-  background-color: #1f1f23;
-  border-radius: 12px;
-  padding: 16px;
-  margin-horizontal: 8px;
-  margin-top: 16px;
-  justify-content: center;
-  align-items: center;
-  height: 250px;
-`;
+const pieData = [
+  { value: 23000, color: '#EF4444', text: '23%' },
+  { value: 77000, color: '#22D3EE', text: '77%' },
+];
 
-const StyledText = styled(Text)<{ style?: TextStyle }>`
-  color: white;
-`;
-
-const PieChartComponent = ({ data }: { data: any[] }) => (
-  <PieChart
-    data={data}
-    donut
-    showText
-    textColor="white"
-    radius={50}
-    innerRadius={30}
-    innerCircleColor={'#1f1f23'}
-  />
-);
-
-const GoalComponent = () => (
-  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-    {["Hamstring", "Neck", "Back", "Waist", "Hand", "Shoulder"].map((goal, idx) => (
-      <CheckBox
-        key={idx}
-        title={goal}
-        checked={idx % 2 === 0}
-        containerStyle={{
-          backgroundColor: '#111111',
-          borderWidth: 0,
-          borderRadius: 10,
-          padding: 0,
-          margin: 0,
-        }}
-        textStyle={{ color: '#fff' }}
-        checkedColor="#EF4444"
-        uncheckedColor="#fff"
-      />
-    ))}
-  </View>
-);
+const goals = ["Hamstring", "Neck", "Back", "Waist", "Hand", "Shoulder"];
 
 const ActivitySlider: React.FC = () => {
-  const pieData = [
-    { value: 23000, color: '#EF4444' }, // Target Calories
-    { value: 100000, color: '#FACC15' }, // Target Steps
-    { value: 77000, color: '#22D3EE' }, // Remaining
-  ];
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [checkedGoals, setCheckedGoals] = useState<string[]>(['Hamstring', 'Back']);
+
+  const toggleGoal = useCallback((goal: string) => {
+    setCheckedGoals(prev =>
+      prev.includes(goal) ? prev.filter(g => g !== goal) : [...prev, goal]
+    );
+  }, []);
+
+  const renderHeader = useCallback((title: string, subtitle: string, rightElement?: React.ReactNode) => (
+    <View className="flex-row justify-between items-center mb-6">
+      <View>
+        <Text className="text-white text-lg font-bold mb-1">{title}</Text>
+        <Text className="text-zinc-400 text-sm">{subtitle}</Text>
+      </View>
+      {rightElement}
+    </View>
+  ), []);
+
+  const DailyActivityCard = useMemo(() => (
+    <View className="bg-zinc-900 mx-4 p-6 rounded-3xl shadow-xl h-[320px] justify-between">
+      {renderHeader('Daily Activity', 'Steps & Calories',
+        <TouchableOpacity className="bg-zinc-800 rounded-full p-2">
+          <Ionicons name="ellipsis-horizontal" size={18} color="#A1A1AA" />
+        </TouchableOpacity>
+      )}
+      <View className="flex-row justify-between items-center mb-6">
+        <View className="items-center w-[48%]">
+          <PieChart
+            data={pieData}
+            donut
+            textColor="white"
+            radius={54}
+            innerRadius={36}
+            innerCircleColor="#1E1B26"
+            textSize={12}
+            centerLabelComponent={() => (
+              <View className="items-center justify-center">
+                <Text className="text-white text-lg font-bold">23%</Text>
+                <Text className="text-zinc-400 text-xs">complete</Text>
+              </View>
+            )}
+          />
+        </View>
+        <View className="w-[48%] pl-4 space-y-5 border-l border-zinc-800">
+          <View><Text className="text-zinc-400 text-xs mb-1">Target Steps</Text><Text className="text-white font-bold text-base">30,000</Text></View>
+          <View><Text className="text-zinc-400 text-xs mb-1">Remaining</Text><Text className="text-white font-bold text-base">7,000</Text></View>
+          <View><Text className="text-zinc-400 text-xs mb-1">Calories Burned</Text><Text className="text-white font-bold text-base">1,230 kcal</Text></View>
+        </View>
+      </View>
+      <View className="flex-row justify-center items-center mb-4 space-x-6">
+        <View className="flex-row items-center space-x-2 mr-4">
+          <View className="w-3 h-3 bg-red-500 rounded-full" />
+          <Text className="text-zinc-200 text-xs ml-1">Steps</Text>
+        </View>
+        <View className="flex-row items-center space-x-2 mr-4">
+          <View className="w-3 h-3 bg-cyan-400 rounded-full" />
+          <Text className="text-zinc-200 text-xs ml-1">Remaining</Text>
+        </View>
+      </View>
+      <Text className="text-yellow-400 text-sm font-semibold text-center">
+        You have achieved 25% of your goal in 3 days
+      </Text>
+    </View>
+  ), [renderHeader]);
+
+  const WeeklyGoalsCard = useMemo(() => (
+    <View className="bg-zinc-900 mx-4 p-6 rounded-3xl shadow-xl h-[320px]">
+      {renderHeader('Weekly Goals', 'Track your fitness targets',
+        <TouchableOpacity className="bg-zinc-800 rounded-lg p-2">
+          <Ionicons name="add" size={18} color="#FFF" />
+        </TouchableOpacity>
+      )}
+      <ScrollView className="flex-1 mb-3">
+        <View className="flex-row flex-wrap">
+          {goals.map((goal, idx) => {
+            const selected = checkedGoals.includes(goal);
+            return (
+              <TouchableOpacity
+                key={idx}
+                className={clsx(
+                  'rounded-xl px-3 py-2 mr-2 mb-2 flex-row items-center',
+                  selected ? 'bg-red-500/10 border border-red-500' : 'bg-zinc-800'
+                )}
+                onPress={() => toggleGoal(goal)}
+              >
+                {selected && (
+                  <Ionicons name="checkmark-circle" size={16} color="#EF4444" style={{ marginRight: 4 }} />
+                )}
+                <Text className={clsx('text-sm', selected ? 'text-red-500 font-semibold' : 'text-zinc-200')}>
+                  {goal}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ScrollView>
+      <View className="mt-auto">
+        <View className="h-2.5 bg-zinc-800 rounded-full w-full mb-3 overflow-hidden">
+          <LinearGradient
+            colors={['#EF4444', '#F97316']}
+            style={{ width: '33%', height: '100%' }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+          />
+        </View>
+        <View className="flex-row justify-between mb-4">
+          <Text className="text-zinc-200 text-sm">Day 2 of 6</Text>
+          <Text className="text-red-500 text-sm font-semibold">33% Complete</Text>
+        </View>
+        <Text className="text-center text-zinc-400 text-xs mt-2">
+          6 days remaining to complete your goals
+        </Text>
+      </View>
+    </View>
+  ), [checkedGoals, renderHeader, toggleGoal]);
+
+  const TrackProgressionCard = useMemo(() => (
+    <View className="bg-zinc-900 mx-4 p-6 rounded-3xl shadow-xl h-[320px]">
+      {renderHeader('Track Progression', 'Daily exercise completion',
+        <View className="bg-red-500 px-3.5 py-1.5 rounded-xl">
+          <Text className="text-white font-bold text-base">25%</Text>
+        </View>
+      )}
+      <View className="items-center mb-6">
+        <View className="flex-row items-center mb-2">
+          <Ionicons name="checkmark-circle" size={20} color="#EF4444" style={{ marginRight: 8 }} />
+          <Text className="text-white text-base font-medium">5 of 12 exercise tasks</Text>
+        </View>
+        <Text className="text-zinc-400 text-sm">completed successfully</Text>
+      </View>
+      <View className="mt-auto">
+        <Text className="text-white font-semibold text-base mb-4">Daily Progression</Text>
+        <View className="flex-row flex-wrap">
+          {[...Array(8)].map((_, idx) => (
+            <View
+              key={idx}
+              className={clsx('w-9 h-9 rounded-lg mr-2 mb-2 justify-center items-center',
+                idx < 5 ? 'bg-red-500' : 'bg-zinc-800')}
+            >
+              <Text className={clsx('font-semibold', idx < 5 ? 'text-white' : 'text-zinc-500')}>
+                {idx + 1}
+              </Text>
+            </View>
+          ))}
+        </View>
+        <Text className="text-center text-zinc-400 text-xs mt-3">4/8 Days Completed</Text>
+      </View>
+    </View>
+  ), [renderHeader]);
+
+  const CARDS = useMemo(() => [DailyActivityCard, WeeklyGoalsCard, TrackProgressionCard], [DailyActivityCard, WeeklyGoalsCard, TrackProgressionCard]);
 
   return (
-    <Carousel
-      loop
-      width={width}
-      height={250}
-      autoPlay
-      data={[1, 2, 3]}
-      scrollAnimationDuration={800}
-      renderItem={({ index }) => {
-        if (index === 0) {
-          return (
-            <StyledView>
-              <StyledText style={{ fontSize: 14, marginBottom: 4 }}>Total Steps</StyledText>
-              <StyledText style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>23,000</StyledText>
-              <PieChartComponent data={pieData} />
-              <StyledText style={{ color: '#FACC15', marginTop: 8 }}>
-                You have achieved 25% of your goal in 3 days
-              </StyledText>
-            </StyledView>
-          );
-        } else if (index === 1) {
-          return (
-            <StyledView>
-              <StyledText style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Goals</StyledText>
-              <StyledText style={{ color: '#A1A1AA', marginBottom: 16 }}>
-                See all your this week goals here
-              </StyledText>
-              <GoalComponent />
-              <StyledText style={{ color: '#A1A1AA', marginTop: 8 }}>
-                6 days remaining from your next goal
-              </StyledText>
-            </StyledView>
-          );
-        } else {
-          return (
-            <StyledView>
-              <StyledText style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>
-                Track Progression
-              </StyledText>
-              <StyledText style={{ color: '#EF4444', fontSize: 20, fontWeight: 'bold' }}>25%</StyledText>
-              <StyledText style={{ color: 'white' }}>5 of 12 exercise tasks</StyledText>
-              <StyledText style={{ color: '#A1A1AA', marginBottom: 8 }}>completed successfully</StyledText>
-              <StyledText style={{ color: 'white', marginBottom: 8 }}>Daily Progression</StyledText>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
-                {[...Array(8)].map((_, idx) => (
-                  <View
-                    key={idx}
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: 4,
-                      backgroundColor: idx < 5 ? '#EF4444' : '#374151',
-                    }}
-                  />
-                ))}
-              </View>
-              <StyledText style={{ color: '#A1A1AA', marginTop: 8 }}>4/8 Days</StyledText>
-            </StyledView>
-          );
-        }
-      }}
-    />
+    <View className="mt-4">
+      <Carousel
+        loop
+        pagingEnabled
+        snapEnabled
+        width={width}
+        height={360}
+        autoPlay={false}
+        data={CARDS}
+        scrollAnimationDuration={400}
+        onProgressChange={(_, absoluteProgress) => setActiveSlide(Math.round(absoluteProgress) % 3)}
+        renderItem={({ item }) => item}
+      />
+
+      <View className="flex-row justify-center mt-4 space-x-2">
+        {[0, 1, 2].map((idx) => (
+          <View
+            key={idx}
+            className={clsx(
+              'h-2 rounded-full transition-all duration-200',
+              activeSlide === idx ? 'w-6 bg-red-500' : 'w-2 bg-zinc-600'
+            )}
+          />
+        ))}
+      </View>
+    </View>
   );
 };
 
