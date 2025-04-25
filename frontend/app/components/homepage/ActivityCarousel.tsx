@@ -14,7 +14,14 @@ const pieData = [
   { value: 77000, color: '#22D3EE', text: '77%' },
 ];
 
-const goals = ["Hamstring", "Neck", "Back", "Waist", "Hand", "Shoulder"];
+const goals = [
+  "Complete 30 hamstring stretches",
+  "15 minutes of neck exercises",
+  "Core back strengthening routine",
+  "Waist twists (3 sets of 20)",
+  "Hand grip exercises (5 minutes)",
+  "Shoulder mobility series"
+];
 
 const ActivitySlider: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -84,29 +91,29 @@ const ActivitySlider: React.FC = () => {
   ), [renderHeader]);
 
   const WeeklyGoalsCard = useMemo(() => (
-    <View className="bg-zinc-900 mx-4 p-6 rounded-3xl shadow-xl h-[320px]">
-      {renderHeader('Weekly Goals', 'Track your fitness targets',
-        <TouchableOpacity className="bg-zinc-800 rounded-lg p-2">
-          <Ionicons name="add" size={18} color="#FFF" />
-        </TouchableOpacity>
+    <View className="bg-zinc-900 mx-3 p-4 rounded-2xl shadow-lg">
+      {renderHeader('Daily Goals', 'Track your fitness targets',
+        // <TouchableOpacity className="bg-zinc-800 rounded-lg p-1.5">
+        //   <Ionicons name="add" size={16} color="#FFF" />
+        // </TouchableOpacity>
       )}
-      <ScrollView className="flex-1 mb-3">
+      
+      <ScrollView className="max-h-32 my-2">
         <View className="flex-row flex-wrap">
           {goals.map((goal, idx) => {
             const selected = checkedGoals.includes(goal);
             return (
               <TouchableOpacity
                 key={idx}
-                className={clsx(
-                  'rounded-xl px-3 py-2 mr-2 mb-2 flex-row items-center',
+                className={`rounded-lg px-2.5 py-1.5 mr-1.5 mb-1.5 flex-row items-center ${
                   selected ? 'bg-red-500/10 border border-red-500' : 'bg-zinc-800'
-                )}
+                }`}
                 onPress={() => toggleGoal(goal)}
               >
                 {selected && (
-                  <Ionicons name="checkmark-circle" size={16} color="#EF4444" style={{ marginRight: 4 }} />
+                  <Ionicons name="checkmark-circle" size={14} color="#EF4444" className="mr-1" />
                 )}
-                <Text className={clsx('text-sm', selected ? 'text-red-500 font-semibold' : 'text-zinc-200')}>
+                <Text className={`text-xs ${selected ? 'text-red-500 font-semibold' : 'text-zinc-200'}`}>
                   {goal}
                 </Text>
               </TouchableOpacity>
@@ -114,8 +121,9 @@ const ActivitySlider: React.FC = () => {
           })}
         </View>
       </ScrollView>
-      <View className="mt-auto">
-        <View className="h-2.5 bg-zinc-800 rounded-full w-full mb-3 overflow-hidden">
+      
+      <View className="mt-2">
+        <View className="h-2 bg-zinc-800 rounded-full w-full mb-1.5 overflow-hidden">
           <LinearGradient
             colors={['#EF4444', '#F97316']}
             style={{ width: '33%', height: '100%' }}
@@ -123,16 +131,16 @@ const ActivitySlider: React.FC = () => {
             end={{ x: 1, y: 0 }}
           />
         </View>
-        <View className="flex-row justify-between mb-4">
-          <Text className="text-zinc-200 text-sm">Day 2 of 6</Text>
-          <Text className="text-red-500 text-sm font-semibold">33% Complete</Text>
+        <View className="flex-row justify-between mb-1">
+          <Text className="text-zinc-300 text-xs">Day 2 of 6</Text>
+          <Text className="text-red-500 text-xs font-semibold">33% Complete</Text>
         </View>
-        <Text className="text-center text-zinc-400 text-xs mt-2">
-          6 days remaining to complete your goals
+        <Text className="text-center text-zinc-400 text-xs mt-1">
+          6 days remaining
         </Text>
       </View>
     </View>
-  ), [checkedGoals, renderHeader, toggleGoal]);
+  ), [checkedGoals, goals, renderHeader, toggleGoal]);
 
   const TrackProgressionCard = useMemo(() => (
     <View className="bg-zinc-900 mx-4 p-6 rounded-3xl shadow-xl h-[320px]">

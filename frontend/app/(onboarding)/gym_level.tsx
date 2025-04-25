@@ -88,7 +88,7 @@ const GymLevelScreen = () => {
         <View className="mt-auto pt-6">
           <TouchableOpacity
             className={`py-4 rounded-xl ${
-              selectedLevel ? 'bg-white' : 'bg-gray-700'
+              selectedLevel ? 'bg-accent' : 'bg-gray-700'
             }`}
             onPress={handleNext}
             disabled={!selectedLevel}
@@ -96,7 +96,7 @@ const GymLevelScreen = () => {
           >
             <Text 
               className={`text-center font-bold text-lg ${
-                selectedLevel ? 'text-primary' : 'text-gray-400'
+                selectedLevel ? 'text-white' : 'text-gray-400'
               }`}
             >
               Continue

@@ -111,7 +111,7 @@ const LocationScreen = () => {
         {/* Buttons */}
         <View className="mb-4">
           <TouchableOpacity
-            className="bg-white py-4 rounded-xl w-full mb-3"
+            className="bg-accent py-4 rounded-xl w-full mb-3"
             onPress={requestLocation}
             disabled={loading}
             activeOpacity={0.8}
@@ -119,7 +119,7 @@ const LocationScreen = () => {
             {loading ? (
               <ActivityIndicator size="small" color="#000" />
             ) : (
-              <Text className="text-primary text-center font-bold text-lg">
+              <Text className="text-white text-center font-bold text-lg">
                 Allow Location Access
               </Text>
             )}

@@ -112,7 +112,7 @@ const DOBScreen = () => {
         <View className="mt-auto pt-6">
           <TouchableOpacity
             className={`py-4 rounded-xl ${
-              date ? (isEighteenOrOlder(date) ? "bg-white" : "bg-gray-700") : "bg-gray-700"
+              date ? (isEighteenOrOlder(date) ? "bg-accent" : "bg-gray-700") : "bg-gray-700"
             }`}
             onPress={handleNext}
             disabled={!date || !isEighteenOrOlder(date)}
@@ -120,7 +120,7 @@ const DOBScreen = () => {
           >
             <Text
               className={`text-center font-bold text-lg ${
-                date && isEighteenOrOlder(date) ? "text-primary" : "text-gray-400"
+                date && isEighteenOrOlder(date) ? "text-white" : "text-gray-400"
               }`}
             >
               Continue

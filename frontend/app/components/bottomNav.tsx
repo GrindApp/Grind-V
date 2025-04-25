@@ -22,7 +22,7 @@ const BottomNav: React.FC = () => {
     size={22}
     color={isActive('/HomeScreen') ? '#FF3B30' : '#D1D1D6'}
   />
-  <Text className={`text-xs mt-1 ${isActive('/HomeScreen') ? 'text-red-500' : 'text-gray-400'}`}>
+  <Text className={`text-xs mt-1 ${isActive('/HomeScreen') ? 'text-accent' : 'text-gray-400'}`}>
     Home
   </Text>
 </TouchableOpacity>
@@ -36,7 +36,7 @@ const BottomNav: React.FC = () => {
     size={22}
     color={isActive('/gymBuddy') ? '#FF3B30' : '#D1D1D6'}
   />
-  <Text className={`text-xs mt-1 ${isActive('/gymBuddy') ? 'text-red-500' : 'text-gray-400'}`}>
+  <Text className={`text-xs mt-1 ${isActive('/gymBuddy') ? 'text-accent' : 'text-gray-400'}`}>
     Gym Buddy
   </Text>
 </TouchableOpacity>
@@ -49,21 +49,12 @@ const BottomNav: React.FC = () => {
     size={22}
     color={isActive('/explore') ? '#FF3B30' : '#D1D1D6'}
   />
-  <Text className={`text-xs mt-1 ${isActive('/explore') ? 'text-red-500' : 'text-gray-400'}`}>
+  <Text className={`text-xs mt-1 ${isActive('/explore') ? 'text-accent' : 'text-gray-400'}`}>
     Explore
   </Text>
 </TouchableOpacity>
 
-<TouchableOpacity onPress={() => router.push('/explore')} className="items-center">
-  <Feather
-    name="activity"
-    size={22}
-    color={isActive('/explore') ? '#FF3B30' : '#D1D1D6'}
-  />
-  <Text className={`text-xs mt-1 ${isActive('/explore') ? 'text-red-500' : 'text-gray-400'}`}>
-    Excercies
-  </Text>
-</TouchableOpacity>
+
 
 
       </View>

@@ -29,7 +29,8 @@ const HomeScreen = () => {
   const router = useRouter();
 
   const sections = useMemo(() => [
-    { key: 'activity', render: () => <ActivityCarousel /> },
+    
+    { key: 'activity', render: () => <ActivityCarousel />, },
     { key: 'rating', render: () => <RatingArenas /> },
     { key: 'category', render: () => <CategoryGrid /> },
     { key: 'gyms', render: () => <GymList /> },
@@ -76,7 +77,7 @@ const HomeScreen = () => {
       <TouchableOpacity onPress={() => setIsSidebarOpen(true)}>
         <Ionicons name="menu" size={26} color="white" />
       </TouchableOpacity>
-      <Text className="text-white text-lg font-semibold tracking-wider">GRIND</Text>
+      <Text className="text-accent text-lg font-semibold tracking-wider">GRIND</Text>
       <TouchableOpacity onPress={() => router.push("/(chat)/friendList")}>
         <Ionicons name="chatbubble-outline" size={24} color="white" />
       </TouchableOpacity>

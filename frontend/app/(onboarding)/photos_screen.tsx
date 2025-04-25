@@ -159,7 +159,7 @@ const PhotosScreen = () => {
         <View className="mt-auto pt-2">
           <TouchableOpacity
             className={`py-4 rounded-xl ${
-              photos.some((p) => p) ? 'bg-white' : 'bg-gray-700'
+              photos.some((p) => p) ? 'bg-accent' : 'bg-gray-700'
             }`}
             onPress={handleNext}
             disabled={!photos.some((p) => p)}
@@ -167,7 +167,7 @@ const PhotosScreen = () => {
           >
             <Text 
               className={`text-center font-bold text-lg ${
-                photos.some((p) => p) ? 'text-primary' : 'text-gray-400'
+                photos.some((p) => p) ? 'text-white' : 'text-gray-400'
               }`}
             >
               Continue

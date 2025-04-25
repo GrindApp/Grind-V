@@ -78,7 +78,7 @@ const GenderScreen = () => {
         <View className="mt-auto pt-6">
           <TouchableOpacity
             className={`py-4 rounded-xl ${
-              selectedGender ? 'bg-white' : 'bg-gray-700'
+              selectedGender ? 'bg-accent' : 'bg-gray-700'
             }`}
             onPress={handleNext}
             disabled={!selectedGender}
@@ -86,7 +86,7 @@ const GenderScreen = () => {
           >
             <Text 
               className={`text-center font-bold text-lg ${
-                selectedGender ? 'text-primary' : 'text-gray-400'
+                selectedGender ? 'text-white' : 'text-gray-400'
               }`}
             >
               Continue

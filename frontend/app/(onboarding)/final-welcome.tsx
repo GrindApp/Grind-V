@@ -26,10 +26,10 @@ const FinalWelcomeScreen = () => {
       </Text>
 
       <TouchableOpacity
-        onPress={() => router.replace('/(tabs)/HomeScreen')}
-        className="bg-white py-3 px-6 rounded-lg"
+        onPress={() => router.replace('/(tabs)/(home)/HomeScreen')}
+        className="bg-accent py-3 px-6 rounded-lg"
       >
-        <Text className="text-black font-semibold text-center">Start Exploring</Text>
+        <Text className="text-white font-semibold text-center">Start Exploring</Text>
       </TouchableOpacity>
     </View>
   );

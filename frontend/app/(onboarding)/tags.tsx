@@ -109,7 +109,7 @@ const TagsScreen = () => {
                   activeOpacity={disabled ? 1 : 0.7}
                   className={`px-4 py-3 rounded-full mr-3 mb-3 ${
                     selected 
-                      ? 'bg-white' 
+                      ? 'bg-accent' 
                       : disabled
                         ? 'bg-gray-800/50 border border-gray-800'
                         : 'bg-gray-800 border border-gray-700'
@@ -118,7 +118,7 @@ const TagsScreen = () => {
                   <Text 
                     className={`font-medium ${
                       selected 
-                        ? 'text-primary' 
+                        ? 'text-white' 
                         : disabled
                           ? 'text-gray-500'
                           : 'text-white'
@@ -144,7 +144,7 @@ const TagsScreen = () => {
         <View className="mt-auto pt-2">
           <TouchableOpacity
             className={`py-4 rounded-xl ${
-              selectedTags.length > 0 ? 'bg-white' : 'bg-gray-700'
+              selectedTags.length > 0 ? 'bg-accent' : 'bg-gray-700'
             }`}
             onPress={handleNext}
             disabled={selectedTags.length === 0}
@@ -152,7 +152,7 @@ const TagsScreen = () => {
           >
             <Text 
               className={`text-center font-bold text-lg ${
-                selectedTags.length > 0 ? 'text-primary' : 'text-gray-400'
+                selectedTags.length > 0 ? 'text-white' : 'text-gray-400'
               }`}
             >
               Continue
