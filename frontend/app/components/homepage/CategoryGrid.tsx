@@ -60,60 +60,59 @@ const CategoryGrid: React.FC = () => {
 
   return (
     <View className="my-6 px-6">
-      <Text className="text-white text-xl font-bold mb-4">Your Type</Text>
+  <Text className="text-white text-xl font-bold mb-4">Your Type</Text>
 
-      <FlatList
-        data={categories}
-        numColumns={4}
-        keyExtractor={(item) => item.id}
-        scrollEnabled={false}
-        contentContainerStyle={{
-          paddingTop: 6,
-          paddingBottom: 20,
-        }}
-        columnWrapperStyle={{
-          justifyContent: 'space-between',
-          marginBottom: GAP,
-        }}
-        renderItem={({ item }) => {
-          const isSelected = selectedCategory === item.id;
+  <FlatList
+    key="horizontal" // Add this key to force a fresh render
+    data={categories}
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    keyExtractor={(item) => item.id}
+    contentContainerStyle={{
+      paddingTop: 6,
+      paddingBottom: 8,
+      paddingRight: 20
+    }}
+    ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
+    renderItem={({ item }) => {
+      const isSelected = selectedCategory === item.id;
 
-          return (
-            <TouchableOpacity
-              className={clsx(
-                'items-center justify-center rounded-2xl',
-                isSelected ? 'border-2 border-white' : 'border border-transparent'
-              )}
-              style={{
-                width: CARD_WIDTH,
-                paddingVertical: 14,
-                paddingHorizontal: 4,
-                backgroundColor: '#23262B',
-              }}
-              activeOpacity={0.85}
-              onPress={() => handleSelect(item.id)}
-            >
-              <View
-                style={{
-                  backgroundColor: '#888A8C80',
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: 8,
-                }}
-              >
-                {item.icon}
-              </View>
-              <Text className="text-white text-xs text-center font-medium leading-tight">
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
-    </View>
+      return (
+        <TouchableOpacity
+          className={clsx(
+            'items-center justify-center rounded-2xl',
+            isSelected ? 'border-2 border-white' : 'border border-transparent'
+          )}
+          style={{
+            width: CARD_WIDTH,
+            paddingVertical: 14,
+            paddingHorizontal: 8,
+            backgroundColor: '#23262B',
+          }}
+          activeOpacity={0.85}
+          onPress={() => handleSelect(item.id)}
+        >
+          <View
+            style={{
+              backgroundColor: '#888A8C80',
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 8,
+            }}
+          >
+            {item.icon}
+          </View>
+          <Text className="text-white text-xs text-center font-medium leading-tight">
+            {item.label}
+          </Text>
+        </TouchableOpacity>
+      );
+    }}
+  />
+</View>
   );
 };
 

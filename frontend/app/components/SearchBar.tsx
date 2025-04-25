@@ -11,10 +11,10 @@ type Props = {
   autoFocus?: boolean;
 };
 
-const SearchBar = ({ 
-  value, 
-  onChange, 
-  onClear, 
+const SearchBar = ({
+  value,
+  onChange,
+  onClear,
   placeholder,
   onSubmit,
   autoFocus = false
@@ -22,44 +22,54 @@ const SearchBar = ({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View className="px-4 py-2">
-      <Pressable 
-        className={`flex-row items-center bg-neutral-800 rounded-xl px-4 py-3 border ${
-          isFocused ? 'border-blue-500' : 'border-transparent'
-        } shadow-sm shadow-black`}
-      >
-        <Search 
-          color={isFocused || value.length > 0 ? "#3b82f6" : "#6b7280"} 
-          size={18} 
-          strokeWidth={2.5}
-        />
-        
-        <TextInput
-          value={value}
-          onChangeText={onChange}
-          placeholder={placeholder}
-          placeholderTextColor="#6b7280"
-          className="text-white flex-1 ml-3 font-medium text-base"
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          onSubmitEditing={onSubmit}
-          returnKeyType="search"
-          selectionColor="#3b82f6"
-          autoFocus={autoFocus}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        
-        {value.length > 0 && (
-          <TouchableOpacity 
-            onPress={onClear}
-            className="bg-neutral-700 rounded-full p-1 active:bg-neutral-600"
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <X color="#d1d5db" size={16} strokeWidth={2.5} />
-          </TouchableOpacity>
-        )}
-      </Pressable>
+    <View style={{
+      flexDirection: 'row',
+      backgroundColor: '#262629',
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      alignItems: 'center',
+      marginHorizontal: 16,
+      marginVertical: 8,
+      borderWidth: 1,
+      borderColor: isFocused ? '#3b82f6' : 'transparent'
+    }}>
+      <Search
+        color={isFocused ? "#3b82f6" : "#6b7280"}
+        size={18}
+        strokeWidth={2.5}
+      />
+      
+      <TextInput
+        style={{
+          flex: 1,
+          marginLeft: 8,
+          color: 'white',
+          fontSize: 16,
+          height: 24,
+          padding: 0
+        }}
+        value={value}
+        onChangeText={onChange}
+        placeholder={placeholder}
+        placeholderTextColor="#6b7280"
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        onSubmitEditing={onSubmit}
+        returnKeyType="search"
+        selectionColor="#3b82f6"
+        autoFocus={autoFocus}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      
+      {value.length > 0 && (
+        <TouchableOpacity onPress={onClear}>
+          <View style={{ padding: 4 }}>
+            <X size={16} color="#6b7280" />
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

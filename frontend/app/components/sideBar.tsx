@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Dimensions, StyleSheet, Modal } from 'react-native';
 import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
 import { useRouter } from "expo-router";
 
 type SidebarProps = {
@@ -10,66 +9,123 @@ type SidebarProps = {
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+  const router = useRouter();
   const screenHeight = Dimensions.get('window').height;
 
-  const router = useRouter();
-  
+  const handleLogout = () => {
+    // Implement your logout logic here
+    setLogoutModalVisible(false);
+    // After logout, you may want to navigate to login screen
+    router.push("/(auth)/login");
+  };
+
+  const menuItems = [
+    { 
+      icon: <Ionicons name="person-outline" size={24} color="#E0E0E0" />, 
+      title: "My Profile", 
+      onPress: () => router.push("/(settings)/EditProfileScreen")
+    },
+    { 
+      icon: <Ionicons name="people-outline" size={24} color="#E0E0E0" />, 
+      title: "Gym Buddies", 
+      onPress: () => router.push("/(settings)/gymbuddyScreen")
+    },
+    { 
+      icon: <Ionicons name="bookmark-outline" size={24} color="#E0E0E0" />, 
+      title: "My OG Collection", 
+      onPress: () => router.push("/(settings)/savedGym")
+    },
+    { 
+      icon: <Ionicons name="settings-outline" size={24} color="#E0E0E0" />, 
+      title: "Settings", 
+      onPress: () => router.push("/(settings)/userSettings")
+    },
+    { 
+      icon: <Feather name="help-circle" size={24} color="#E0E0E0" />, 
+      title: "Need Help", 
+      onPress: () => router.push("/(settings)/QueryScreen")
+    },
+  ];
+
   return (
-    <View style={[styles.container, { height: screenHeight }]}>
-      <SafeAreaView edges={['top', 'bottom']} style={{ height: '100%' }}>
-        <View className="flex-1 p-4">
-          {/* Logo & Close */}
-          <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-white text-xl font-semibold">
-              <Text style={{ color: '#FF3B30' }}>G</Text>RIND
-            </Text>
-            <TouchableOpacity onPress={onClose}>
-              <Ionicons name="close" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Menu Items */}
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <TouchableOpacity onPress={()=>router.push("/(settings)/userSettings")} className="flex-row items-center py-3">
-              <Ionicons name="person-circle-outline" size={22} color="white" />
-              <Text className="text-white text-base ml-3">My Profile</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={()=>router.push("/(settings)/gymbuddyScreen")} className="flex-row items-center py-3">
-              <Ionicons name="people-outline" size={22} color="white" />
-              <Text className="text-white text-base ml-3">Gym Buddies</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={()=>router.push("/(settings)/savedGym")} className="flex-row items-center py-3">
-              <Ionicons name="save" size={22} color="white" />
-              <Text className="text-white text-base ml-3">My OG Collection</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={()=>router.push("/(settings)/EditProfileScreen")}  className="flex-row items-center py-3">
-              <Feather name="settings" size={22} color="white" />
-              <Text className="text-white text-base ml-3">Settings</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={()=>router.push("/(settings)/QueryScreen")} className="flex-row items-center py-3">
-              <Feather name="help-circle" size={22} color="white" />
-              <Text className="text-white text-base ml-3">Need Help</Text>
-            </TouchableOpacity>
-
-            <View className="border-t border-gray-700 my-4" />
-
-            <TouchableOpacity className="flex-row items-center py-3">
-              <MaterialIcons name="logout" size={22} color="white" />
-              <Text className="text-white text-base ml-3">Log Out</Text>
-            </TouchableOpacity>
-          </ScrollView>
-
-          {/* Footer */}
-          <Text className="text-red-500 text-xs text-center mt-6 mb-4">
-            © GRIND ASSOCIATION 2024
-          </Text>
+    <SafeAreaView style={[styles.container, { height: screenHeight }]}>
+      <View style={styles.content}>
+        {/* Header with Logo & Close */}
+        <View style={styles.header}>
+          <Text style={styles.logo}>GRIND</Text>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Ionicons name="close" size={28} color="#E0E0E0" />
+          </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </View>
+
+        {/* Divider */}
+        <View style={styles.divider} />
+
+        {/* Menu Items */}
+        <ScrollView style={styles.menuContainer} showsVerticalScrollIndicator={false}>
+          {menuItems.map((item, index) => (
+            <TouchableOpacity 
+              key={index} 
+              style={styles.menuItem} 
+              onPress={item.onPress}
+            >
+              <View style={styles.menuItemContent}>
+                {item.icon}
+                <Text style={styles.menuItemText}>{item.title}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+
+          {/* Logout Button */}
+          <TouchableOpacity 
+            style={[styles.menuItem, styles.logoutButton]} 
+            onPress={() => setLogoutModalVisible(true)}
+          >
+            <View style={styles.menuItemContent}>
+              <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
+              <Text style={styles.logoutText}>Log Out</Text>
+            </View>
+          </TouchableOpacity>
+        </ScrollView>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>© GRIND ASSOCIATION 2024</Text>
+        </View>
+
+        {/* Logout Confirmation Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={logoutModalVisible}
+          onRequestClose={() => setLogoutModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Logout Confirmation</Text>
+              <Text style={styles.modalMessage}>Are you sure you want to log out?</Text>
+              
+              <View style={styles.modalButtons}>
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.cancelButton]} 
+                  onPress={() => setLogoutModalVisible(false)}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.logoutConfirmButton]} 
+                  onPress={handleLogout}
+                >
+                  <Text style={styles.logoutConfirmText}>Log Out</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -81,7 +137,130 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 1000,
     width: '80%',
-  }
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 10,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  logo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#E0E0E0',
+    letterSpacing: 1.5,
+  },
+  closeButton: {
+    padding: 5,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#333333',
+    marginVertical: 10,
+  },
+  menuContainer: {
+    marginTop: 15,
+    flex: 1,
+  },
+  menuItem: {
+    paddingVertical: 15,
+    borderRadius: 8,
+    marginBottom: 5,
+  },
+  menuItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuItemText: {
+    marginLeft: 20,
+    fontSize: 16,
+    color: '#E0E0E0',
+    fontWeight: '500',
+  },
+  logoutButton: {
+    marginTop: 20,
+  },
+  logoutText: {
+    marginLeft: 20,
+    fontSize: 16,
+    color: '#FF3B30',
+    fontWeight: '500',
+  },
+  footer: {
+    marginTop: 20,
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#333333',
+    alignItems: 'center',
+  },
+  footerText: {
+    color: '#8E8E93',
+    fontSize: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#2C2C2E',
+    borderRadius: 12,
+    padding: 24,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#E0E0E0',
+    marginBottom: 12,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: '#AAAAAA',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  modalButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  cancelButton: {
+    backgroundColor: '#3A3A3C',
+  },
+  cancelButtonText: {
+    color: '#E0E0E0',
+    fontWeight: '500',
+  },
+  logoutConfirmButton: {
+    backgroundColor: '#FF3B30',
+  },
+  logoutConfirmText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
 });
 
 export default Sidebar;
+

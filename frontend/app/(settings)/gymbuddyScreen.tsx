@@ -1,265 +1,800 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
   FlatList,
+  StatusBar,
   Animated,
-} from 'react-native';
+  Modal,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from "react-native";
 import {
   Ionicons,
-  Feather,
+  MaterialCommunityIcons,
   MaterialIcons,
-  FontAwesome5,
-} from '@expo/vector-icons';
-import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+} from "@expo/vector-icons";
+import {
+  Swipeable,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Easing } from "react-native";
 
-type Buddy = {
+interface Buddy {
   id: string;
   name: string;
   message: string;
   image: string;
-  status?: string;
-};
+  status: string;
+  lastWorkout?: string;
+  blockedDate?: string;
+}
+
+type TabType = "requests" | "added" | "blocked";
 
 const initialData = {
   requests: [
     {
-      id: '1',
-      name: 'Rajesh Shukla',
-      message: 'Hi brother...',
-      image: 'https://i.pravatar.cc/150?img=1',
-      status: 'Online',
-    },
-    {
-      id: '2',
-      name: 'Ankit Verma',
-      message: "Let's hit gym!",
-      image: 'https://i.pravatar.cc/150?img=2',
-      status: '2h ago',
+      id: "1",
+      name: "Rajesh Shukla",
+      message: "Looking for a workout partner this week",
+      image: "https://i.pravatar.cc/300?img=11",
+      status: "Online",
+      lastWorkout: "Chest Day",
     },
   ],
   added: [
     {
-      id: '3',
-      name: 'Neha Kapoor',
-      message: "Let's stay fit 💪",
-      image: 'https://i.pravatar.cc/150?img=3',
-      status: 'Online',
+      id: "2",
+      name: "Neha Kapoor",
+      message: "Let's hit the new CrossFit class tomorrow!",
+      image: "https://i.pravatar.cc/300?img=20",
+      status: "Online",
+      lastWorkout: "HIIT",
     },
     {
-      id: '4',
-      name: 'Vikram Singh',
-      message: 'Daily workout partner',
-      image: 'https://i.pravatar.cc/150?img=4',
-      status: '30m ago',
+      id: "3",
+      name: "Arjun Mehta",
+      message: "Great workout yesterday! Same time next week?",
+      image: "https://i.pravatar.cc/300?img=12",
+      status: "Last seen 2h ago",
+      lastWorkout: "Leg Day",
+    },
+  ],
+  blocked: [
+    {
+      id: "4",
+      name: "Rohit Sharma",
+      message: "Blocked for inappropriate messages",
+      image: "https://i.pravatar.cc/300?img=33",
+      status: "Blocked",
+      blockedDate: "Apr 15, 2025",
     },
     {
-      id: '5',
-      name: 'Priya Patel',
-      message: 'Need a spotter today?',
-      image: 'https://i.pravatar.cc/150?img=5',
-      status: '1h ago',
+      id: "5",
+      name: "Priya Malhotra",
+      message: "Blocked for spam invitations",
+      image: "https://i.pravatar.cc/300?img=44",
+      status: "Blocked",
+      blockedDate: "Apr 22, 2025",
     },
   ],
 };
 
+const { height, width } = Dimensions.get("window");
+
 const GymBuddyScreen = () => {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState<'requests' | 'added'>('requests');
+  const [activeTab, setActiveTab] = useState<TabType>("requests");
   const [buddies, setBuddies] = useState(initialData);
-  const swipeableRefs = useRef<{ [key: string]: Swipeable | null }>({});
+  const swipeableRefs = useRef<Record<string, Swipeable | null>>({});
+  const [selectedBuddy, setSelectedBuddy] = useState<Buddy | null>(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [showModal, setShowModal] = useState(false);
 
-  const animateTab = (tab: 'requests' | 'added') => {
-    setActiveTab(tab);
+  // Custom animated bottom sheet
+  const slideAnim = useRef(new Animated.Value(height)).current;
+
+  // Swipe hint animation
+  const [showSwipeHint, setShowSwipeHint] = useState(false);
+  const swipeAnim = useRef(new Animated.Value(0)).current;
+  const swipeHintOpacity = useRef(new Animated.Value(0)).current;
+
+  const resetSwipeHint = async () => {
+    try {
+      await AsyncStorage.removeItem("hasSeenSwipeHint");
+      console.log("Swipe hint reset.");
+    } catch (error) {
+      console.error("Failed to reset swipe hint:", error);
+    }
   };
 
-  const handleAccept = (user: Buddy) => {
-    setBuddies((prev) => ({
-      requests: prev.requests.filter((r) => r.id !== user.id),
-      added: [...prev.added, { ...user, status: user.status || '' }],
-    }));
+  // Check if user has seen the swipe hint before
+  useEffect(() => {
+    const checkHintStatus = async () => {
+      try {
+        const hasSeenHint = await AsyncStorage.getItem("hasSeenSwipeHint");
+        if (activeTab === "added" && buddies.added.length > 0 && !hasSeenHint) {
+          setTimeout(() => {
+            setShowSwipeHint(true);
+            fadeInSwipeHint();
+            animateSwipeHint();
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+              dismissSwipeHint();
+            }, 5000);
+          }, 1000);
+        }
+      } catch (error) {
+        console.error("Error checking hint status:", error);
+      }
+    };
+
+    checkHintStatus();
+    resetSwipeHint();
+  }, [activeTab]);
+
+  const fadeInSwipeHint = () => {
+    Animated.timing(swipeHintOpacity, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
 
-  const handleReject = (user: Buddy) => {
+  const animateSwipeHint = () => {
+    Animated.sequence([
+      Animated.timing(swipeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(swipeAnim, {
+        toValue: -40,
+        duration: 1000,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      }),
+      Animated.timing(swipeAnim, {
+        toValue: 0,
+        duration: 700,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      // Repeat the animation once more
+      setTimeout(() => {
+        animateSwipeHint();
+      }, 1500);
+    });
+  };
+
+  const dismissSwipeHint = async () => {
+    Animated.timing(swipeHintOpacity, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(() => {
+      setShowSwipeHint(false);
+    });
+
+    try {
+      await AsyncStorage.setItem("hasSeenSwipeHint", "true");
+    } catch (error) {
+      console.error("Error saving hint status:", error);
+    }
+  };
+
+  // Animate content when tab changes
+  useEffect(() => {
+    // Reset opacity
+    fadeAnim.setValue(0);
+    // Animate to full opacity
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [activeTab]);
+
+  const openBottomSheet = useCallback(
+    (buddy: Buddy) => {
+      setSelectedBuddy(buddy);
+      setShowModal(true);
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        useNativeDriver: true,
+        tension: 40,
+        friction: 10,
+      }).start();
+    },
+    [slideAnim]
+  );
+
+  const closeBottomSheet = useCallback(() => {
+    Animated.timing(slideAnim, {
+      toValue: height,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setShowModal(false);
+    });
+  }, [slideAnim, height]);
+
+  const handleAccept = useCallback((buddy: Buddy) => {
+    console.log(`Accepted ${buddy.name}`);
+    // Move the buddy from requests to added
     setBuddies((prev) => ({
       ...prev,
-      requests: prev.requests.filter((r) => r.id !== user.id),
+      requests: prev.requests.filter((r) => r.id !== buddy.id),
+      added: [...prev.added, buddy],
     }));
-  };
+  }, []);
 
-  const handleDelete = (user: Buddy) => {
+  const handleReject = useCallback((buddy: Buddy) => {
     setBuddies((prev) => ({
       ...prev,
-      added: prev.added.filter((buddy) => buddy.id !== user.id),
+      requests: prev.requests.filter((r) => r.id !== buddy.id),
     }));
-    closeRow(user.id);
-  };
+  }, []);
 
-  const closeRow = (id: string) => swipeableRefs.current[id]?.close();
+  const handleRemove = useCallback(() => {
+    if (selectedBuddy) {
+      setBuddies((prev) => ({
+        ...prev,
+        added: prev.added.filter((b) => b.id !== selectedBuddy.id),
+      }));
+      closeBottomSheet();
+    }
+  }, [selectedBuddy, closeBottomSheet]);
 
-  const renderHeader = () => (
-    <View className="flex-row justify-between items-center px-4 py-4">
-      <View className="flex-row items-center">
-        <TouchableOpacity className="bg-zinc-900 p-2 rounded-full mr-3">
-          <Ionicons name="arrow-back" size={20} color="#FF3B30" />
+  const handleBlock = useCallback(() => {
+    if (selectedBuddy) {
+      const today = new Date();
+      const formattedDate = today.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      const blockedBuddy = {
+        ...selectedBuddy,
+        status: "Blocked",
+        blockedDate: formattedDate,
+      };
+
+      setBuddies((prev) => ({
+        ...prev,
+        added: prev.added.filter((b) => b.id !== selectedBuddy.id),
+        blocked: [...prev.blocked, blockedBuddy],
+      }));
+
+      closeBottomSheet();
+    }
+  }, [selectedBuddy, closeBottomSheet]);
+
+  const handleUnblock = useCallback((buddy: Buddy) => {
+    setBuddies((prev) => ({
+      ...prev,
+      blocked: prev.blocked.filter((b) => b.id !== buddy.id),
+    }));
+  }, []);
+
+  const renderRightActions = useCallback(
+    (buddy: Buddy) => (
+      <View className="flex-row items-center h-full pr-3">
+        <TouchableOpacity
+          onPress={() => openBottomSheet(buddy)}
+          className="w-12 h-12 rounded-full bg-zinc-700/80 justify-center items-center backdrop-blur-md shadow-lg border border-zinc-600/30"
+          style={{
+            shadowColor: "#000",
+            shadowOpacity: 0.25,
+            shadowRadius: 8,
+            shadowOffset: { width: 0, height: 4 },
+          }}
+        >
+          <Ionicons name="ellipsis-horizontal" size={20} color="#f1f5f9" />
         </TouchableOpacity>
-        <Text className="text-white text-lg font-semibold">Gym Buddies</Text>
       </View>
-      <TouchableOpacity className="bg-zinc-900 p-2 rounded-full">
-        <Feather name="search" size={20} color="#FF3B30" />
-      </TouchableOpacity>
-    </View>
+    ),
+    [openBottomSheet]
   );
 
-  // const renderHeader = () => (
-  //   <View className="flex-row items-center px-4 py-4">
-  //      <TouchableOpacity onPress={() => navigation.goBack()} className="flex-row items-center">
-  //     <Ionicons name="arrow-back" size={24} color="#fff" />
-  //     <Text className="text-white text-base ml-2">My Buddies</Text>
-  //   </TouchableOpacity>
-  //   </View>
-  // );
+  const BuddyCard = useCallback(
+    ({ item }: { item: Buddy }) => {
+      const isOnline = item.status === "Online";
+      const isBlocked = activeTab === "blocked";
 
-  const renderTabs = () => (
-    <View className="px-4 pb-4">
-      <View className="flex-row bg-zinc-900 rounded-xl overflow-hidden h-12">
-        {(['requests', 'added'] as const).map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            className={`flex-1 justify-center items-center ${
-              activeTab === tab ? 'bg-zinc-800' : ''
-            }`}
-            onPress={() => animateTab(tab)}
-          >
-            <Text className={`font-semibold text-xs ${
-              activeTab === tab ? 'text-white' : 'text-neutral-400'
-            }`}>
-              {tab === 'requests'
-                ? `REQUESTS (${buddies.requests.length})`
-                : `MY BUDDIES (${buddies.added.length})`}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-  );
-
-  const renderBuddyCard = ({ item }: { item: Buddy }) => {
-    const isOnline = item.status === 'Online';
-
-    const userCard = (
-      <View className="flex-row items-center space-x-4 flex-1">
-        <View className="relative">
-          <Image source={{ uri: item.image }} className="w-14 h-14 rounded-full" />
-          {isOnline && (
-            <View className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-zinc-900" />
-          )}
-        </View>
-        <View className="flex-1">
-          <View className="flex-row justify-between items-center">
-            <Text className="text-white font-medium text-base">{item.name}</Text>
-            {!isOnline && <Text className="text-neutral-400 text-xs">{item.status}</Text>}
+      const UserDetails = () => (
+        <View className="flex-row items-start space-x-3 flex-1">
+          <View className="relative">
+            <Image
+              source={{ uri: item.image }}
+              className={`w-14 h-14 rounded-full border-2 ${
+                isBlocked ? "border-red-800/40 opacity-80" : "border-zinc-700"
+              }`}
+            />
+            {!isBlocked && isOnline && (
+              <View className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-zinc-900" />
+            )}
+            {isBlocked && (
+              <View className="absolute top-0 right-0 w-5 h-5 bg-red-500 rounded-full border border-zinc-900 items-center justify-center">
+                <Ionicons name="ban-outline" size={12} color="#ffffff" />
+              </View>
+            )}
           </View>
-          <Text className="text-neutral-400 mt-1 text-sm">{item.message}</Text>
+          <View className="flex-1 pt-0.5">
+            <View className="flex-row justify-between mb-1">
+              <Text className="text-white font-semibold text-base">
+                {item.name}
+              </Text>
+              {!isOnline && item.status && !isBlocked && (
+                <Text className="text-zinc-400 text-xs">{item.status}</Text>
+              )}
+              {isBlocked && item.blockedDate && (
+                <Text className="text-red-400/70 text-xs">
+                  {item.blockedDate}
+                </Text>
+              )}
+            </View>
+            <Text
+              className={`${
+                isBlocked ? "text-zinc-400" : "text-zinc-300"
+              } text-sm`}
+            >
+              {item.message}
+            </Text>
+            {!isBlocked && item.lastWorkout && (
+              <View className="flex-row items-center mt-1">
+                <MaterialCommunityIcons
+                  name="dumbbell"
+                  size={14}
+                  color="#9CA3AF"
+                />
+                <Text className="text-zinc-400 text-xs ml-1.5">
+                  {item.lastWorkout}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
-      </View>
-    );
+      );
 
-    if (activeTab === 'added') {
-      return (
-        <Swipeable
-          ref={(ref) => (swipeableRefs.current[item.id] = ref)}
-          renderRightActions={() => (
-            <View className="flex-row w-40">
-              <TouchableOpacity className="w-20 justify-center items-center bg-blue-500">
-                <Ionicons name="chatbubble-outline" size={22} color="#fff" />
-                <Text className="text-white text-xs mt-1">Message</Text>
-              </TouchableOpacity>
+      const Wrapper = ({ children }: { children: React.ReactNode }) => (
+        <View
+          className={`${
+            isBlocked ? "bg-zinc-800/70" : "bg-zinc-800/90"
+          } mx-4 mb-4 px-4 py-4 rounded-2xl border ${
+            isBlocked ? "border-red-900/20" : "border-zinc-700/40"
+          } shadow-md`}
+          style={{
+            shadowColor: "#000",
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+            shadowOffset: { width: 0, height: 5 },
+          }}
+        >
+          {children}
+        </View>
+      );
+
+      if (isBlocked) {
+        // Blocked user card
+        return (
+          <Wrapper>
+            <View className="flex-row items-start justify-between">
+              <UserDetails />
               <TouchableOpacity
-                className="w-20 justify-center items-center bg-red-500"
-                onPress={() => handleDelete(item)}
+                onPress={() => handleUnblock(item)}
+                className="bg-zinc-700/80 px-4 h-10 rounded-xl justify-center items-center shadow-sm"
+                style={{
+                  shadowColor: "#34D399",
+                  shadowOpacity: 0.2,
+                  shadowRadius: 5,
+                  shadowOffset: { width: 0, height: 2 },
+                }}
               >
-                <Ionicons name="trash-outline" size={22} color="#fff" />
-                <Text className="text-white text-xs mt-1">Remove</Text>
+                <Text className="text-green-400 text-sm font-medium">
+                  Unblock
+                </Text>
               </TouchableOpacity>
             </View>
-          )}
-        >
-          <View className="bg-zinc-900 mx-4 mb-3 p-4 rounded-2xl flex-row justify-between items-center">
-            {userCard}
-            <TouchableOpacity className="p-2">
-              <Feather name="more-vertical" size={18} color="#7F7F7F" />
+          </Wrapper>
+        );
+      } else if (activeTab === "added") {
+        // Added buddies card with swipe action
+        return (
+          <Swipeable
+            ref={(ref) => (swipeableRefs.current[item.id] = ref)}
+            renderRightActions={() => renderRightActions(item)}
+            friction={2}
+            rightThreshold={40}
+          >
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => console.log("Message", item.name)}
+            >
+              <Wrapper>
+                <UserDetails />
+              </Wrapper>
             </TouchableOpacity>
-          </View>
-        </Swipeable>
-      );
+          </Swipeable>
+        );
+      } else {
+        // Request card with accept/reject buttons
+        return (
+          <Wrapper>
+            <View className="flex-row items-start justify-between">
+              <UserDetails />
+              <View className="flex-row space-x-3">
+                <TouchableOpacity
+                  onPress={() => handleReject(item)}
+                  className="bg-zinc-700/80 w-11 h-11 rounded-full justify-center items-center shadow-sm"
+                  style={{
+                    shadowColor: "#FF4040",
+                    shadowOpacity: 0.3,
+                    shadowRadius: 5,
+                    shadowOffset: { width: 0, height: 2 },
+                  }}
+                >
+                  <Ionicons name="close" size={20} color="#FF4040" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleAccept(item)}
+                  className="bg-zinc-700/80 w-11 h-11 rounded-full justify-center items-center shadow-sm"
+                  style={{
+                    shadowColor: "#34D399",
+                    shadowOpacity: 0.3,
+                    shadowRadius: 5,
+                    shadowOffset: { width: 0, height: 2 },
+                  }}
+                >
+                  <Ionicons name="checkmark" size={20} color="#34D399" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Wrapper>
+        );
+      }
+    },
+    [activeTab, handleAccept, handleReject, renderRightActions, handleUnblock]
+  );
+
+  const EmptyState = () => {
+    let icon, title, message;
+
+    if (activeTab === "requests") {
+      icon = "account-clock";
+      title = "No pending requests";
+      message = "Check back later for new gym buddy requests";
+    } else if (activeTab === "added") {
+      icon = "account-group";
+      title = "No buddies added yet";
+      message = "Start accepting requests to build your fitness network";
+    } else {
+      icon = "account-cancel";
+      title = "No blocked users";
+      message = "Your blocked users list is empty";
     }
 
     return (
-      <View className="bg-zinc-900 mx-4 mb-3 p-4 rounded-2xl">
-        <View className="flex-row justify-between items-center">
-          {userCard}
-          <View className="flex-row space-x-3 ml-3">
-            <TouchableOpacity
-              onPress={() => handleReject(item)}
-              className="bg-zinc-800 w-10 h-10 rounded-full justify-center items-center"
-            >
-              <Ionicons name="close" size={22} color="#FF3B30" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleAccept(item)}
-              className="bg-zinc-800 w-10 h-10 rounded-full justify-center items-center"
-            >
-              <Ionicons name="checkmark" size={22} color="#34C759" />
-            </TouchableOpacity>
-          </View>
-        </View>
+      <View className="flex-1 justify-center items-center px-6 py-20">
+        <MaterialCommunityIcons name={icon} size={60} color="#52525b" />
+        <Text className="text-zinc-400 text-lg font-medium mt-4 text-center">
+          {title}
+        </Text>
+        <Text className="text-zinc-500 text-sm mt-2 text-center">
+          {message}
+        </Text>
       </View>
     );
   };
 
-  const renderEmptyList = () => (
-    <View className="items-center justify-center py-10 px-6">
-      <View className="bg-zinc-900 p-6 rounded-full mb-5">
-        {activeTab === 'requests' ? (
-          <MaterialIcons name="person-add-disabled" size={36} color="#7F7F7F" />
-        ) : (
-          <FontAwesome5 name="user-friends" size={34} color="#7F7F7F" />
-        )}
+  // Custom tab bar item
+  const TabItem = ({
+    tab,
+    label,
+    count,
+    icon,
+  }: {
+    tab: TabType;
+    label: string;
+    count: number;
+    icon: string;
+  }) => (
+    <TouchableOpacity
+      onPress={() => setActiveTab(tab)}
+      className={`flex-1 py-2.5 rounded-lg items-center ${
+        activeTab === tab
+          ? tab === "blocked"
+            ? "bg-red-900/40"
+            : "bg-zinc-700"
+          : ""
+      }`}
+    >
+      <View className="flex-row items-center">
+        <MaterialIcons
+          name={icon as 'account-cancel' | 'account-clock' | 'account-group'}
+          size={16}
+          color={activeTab === tab ? "#ffffff" : "#9ca3af"}
+        />
+        <Text
+          className={`${
+            activeTab === tab ? "text-white font-semibold" : "text-zinc-400"
+          } text-sm ml-1.5`}
+        >
+          {`${label} (${count})`}
+        </Text>
       </View>
-      <Text className="text-white text-lg font-semibold mb-2">
-        {activeTab === 'requests' ? 'No Friend Requests' : 'No Buddies Added Yet'}
-      </Text>
-      <Text className="text-neutral-400 text-center leading-5 mb-3">
-        {activeTab === 'requests'
-          ? 'When someone sends you a request, it will appear here.'
-          : 'Find gym buddies nearby to start working out together.'}
-      </Text>
-      {activeTab === 'added' && (
-        <TouchableOpacity className="bg-red-500 px-6 py-3 rounded-xl mt-2">
-          <Text className="text-white font-semibold">Find Buddies</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+    </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-primary">
+    <SafeAreaView className="flex-1 bg-zinc-900">
+      <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={["#18181b", "#09090b"]}
+        className="absolute inset-0"
+      />
       <GestureHandlerRootView className="flex-1">
-        {renderHeader()}
-        {renderTabs()}
-        <FlatList
-          data={activeTab === 'requests' ? buddies.requests : buddies.added}
-          keyExtractor={(item) => item.id}
-          renderItem={renderBuddyCard}
-          ListEmptyComponent={renderEmptyList}
-          contentContainerStyle={{ paddingBottom: 24 }}
-          showsVerticalScrollIndicator={false}
-        />
+        <View className="px-4 pt-2">
+          <View className="flex-row items-center justify-between mb-4">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="w-10 h-10 rounded-full bg-zinc-800 justify-center items-center"
+            >
+              <Ionicons name="arrow-back" size={22} color="#FF4141" />
+            </TouchableOpacity>
+            <Text className="text-white font-bold text-xl">Gym Buddies</Text>
+            <TouchableOpacity
+              onPress={() => console.log("Search")}
+              className="w-10 h-10 rounded-full bg-zinc-800 justify-center items-center"
+            >
+              <Ionicons name="search" size={22} color="#f1f5f9" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Enhanced Tab Bar */}
+          <View className="bg-zinc-800 rounded-xl p-1.5 mb-6">
+            <View className="flex-row">
+              <TabItem
+                tab="requests"
+                label="Requests"
+                count={buddies.requests.length}
+                icon="person-add"
+              />
+              <TabItem
+                tab="added"
+                label="Buddies"
+                count={buddies.added.length}
+                icon="people"
+              />
+              <TabItem
+                tab="blocked"
+                label="Blocked"
+                count={buddies.blocked.length}
+                icon="block"
+              />
+            </View>
+          </View>
+        </View>
+
+        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+          <FlatList
+            data={
+              activeTab === "requests"
+                ? buddies.requests
+                : activeTab === "added"
+                ? buddies.added
+                : buddies.blocked
+            }
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <BuddyCard item={item} />}
+            contentContainerStyle={{
+              paddingBottom: 32,
+              flexGrow: 1,
+            }}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={EmptyState}
+          />
+        </Animated.View>
+
+        {/* Swipe Hint */}
+        {showSwipeHint && activeTab === "added" && buddies.added.length > 0 && (
+          <Animated.View
+            style={{
+              position: "absolute",
+              bottom: 80,
+              left: 0,
+              right: 0,
+              alignItems: "center",
+              opacity: swipeHintOpacity,
+            }}
+          >
+            <Animated.View
+              style={{
+                transform: [{ translateX: swipeAnim }],
+                backgroundColor: "rgba(39, 39, 42, 0.9)",
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                borderRadius: 16,
+                borderWidth: 1,
+                borderColor: "rgba(113, 113, 122, 0.3)",
+                flexDirection: "row",
+                alignItems: "center",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.25,
+                shadowRadius: 8,
+                elevation: 5,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="gesture-swipe-left"
+                size={20}
+                color="#f43f5e"
+              />
+              <Text
+                style={{
+                  color: "#fff",
+                  marginLeft: 8,
+                  fontSize: 14,
+                  fontWeight: "500",
+                }}
+              >
+                Swipe left on a buddy for more options
+              </Text>
+              <TouchableOpacity
+                onPress={dismissSwipeHint}
+                style={{ marginLeft: 10 }}
+              >
+                <Ionicons name="close-circle" size={18} color="#9ca3af" />
+              </TouchableOpacity>
+            </Animated.View>
+          </Animated.View>
+        )}
+
+        {/* Add Buddy Button */}
+        {activeTab !== "blocked" && (
+          <TouchableOpacity
+            className="absolute bottom-6 right-6 bg-red-500 w-14 h-14 rounded-full justify-center items-center shadow-lg"
+            style={{
+              shadowColor: "#ef4444",
+              shadowOpacity: 0.3,
+              shadowRadius: 10,
+              shadowOffset: { width: 0, height: 5 },
+            }}
+            onPress={() => console.log("Add new buddy")}
+          >
+            <Ionicons name="add" size={30} color="#ffffff" />
+          </TouchableOpacity>
+        )}
+
+        {/* Custom Bottom Sheet Modal */}
+        <Modal
+          visible={showModal}
+          transparent={true}
+          animationType="none"
+          onRequestClose={closeBottomSheet}
+        >
+          <TouchableWithoutFeedback onPress={closeBottomSheet}>
+            <View className="flex-1 bg-black/50 justify-end">
+              <TouchableWithoutFeedback>
+                <Animated.View
+                  className="bg-zinc-900 rounded-t-3xl overflow-hidden"
+                  style={{
+                    transform: [{ translateY: slideAnim }],
+                    shadowColor: "#000",
+                    shadowOpacity: 0.25,
+                    shadowRadius: 20,
+                    shadowOffset: { width: 0, height: -5 },
+                    elevation: 10,
+                  }}
+                >
+                  <View className="px-6 pt-4 pb-8">
+                    {/* Handle indicator */}
+                    <View className="w-12 h-1 bg-zinc-700 rounded-full self-center mb-6" />
+
+                    {selectedBuddy && (
+                      <>
+                        <View className="items-center mb-6">
+                          <Image
+                            source={{ uri: selectedBuddy.image }}
+                            className="w-20 h-20 rounded-full border-2 border-zinc-700 mb-3"
+                          />
+                          <Text className="text-white text-xl font-bold">
+                            {selectedBuddy.name}
+                          </Text>
+                          <Text className="text-zinc-400 text-sm mt-1">
+                            {selectedBuddy.status}
+                          </Text>
+                        </View>
+
+                        <TouchableOpacity
+                          className="mb-3 p-4 rounded-xl bg-zinc-800 border border-zinc-700 flex-row items-center"
+                          onPress={() => {
+                            console.log("Message", selectedBuddy.name);
+                            closeBottomSheet();
+                          }}
+                        >
+                          <Ionicons
+                            name="chatbubble-outline"
+                            size={20}
+                            color="#f1f5f9"
+                          />
+                          <Text className="text-white text-base font-medium ml-3">
+                            Message
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          className="mb-3 p-4 rounded-xl bg-zinc-800 border border-zinc-700 flex-row items-center"
+                          onPress={() => {
+                            console.log("View Profile of", selectedBuddy.name);
+                            closeBottomSheet();
+                          }}
+                        >
+                          <Ionicons
+                            name="person-outline"
+                            size={20}
+                            color="#f1f5f9"
+                          />
+                          <Text className="text-white text-base font-medium ml-3">
+                            View Profile
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          className="mb-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex-row items-center"
+                          onPress={handleBlock}
+                        >
+                          <Ionicons
+                            name="ban-outline"
+                            size={20}
+                            color="#f87171"
+                          />
+                          <Text className="text-red-400 text-base font-medium ml-3">
+                            Block User
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          className="p-4 rounded-xl bg-red-600/10 border border-red-600/30 flex-row items-center"
+                          onPress={handleRemove}
+                        >
+                          <Ionicons
+                            name="person-remove-outline"
+                            size={20}
+                            color="#ef4444"
+                          />
+                          <Text className="text-red-500 text-base font-medium ml-3">
+                            Remove Friend
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          className="mt-6 p-3 items-center"
+                          onPress={closeBottomSheet}
+                        >
+                          <Text className="text-zinc-400 text-base">
+                            Cancel
+                          </Text>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </GestureHandlerRootView>
     </SafeAreaView>
   );
