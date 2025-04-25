@@ -25,6 +25,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Easing } from "react-native";
+import { router } from "expo-router";
 
 interface Buddy {
   id: string;
@@ -545,21 +546,17 @@ const GymBuddyScreen = () => {
       />
       <GestureHandlerRootView className="flex-1">
         <View className="px-4 pt-2">
-          <View className="flex-row items-center justify-between mb-4">
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              className="w-10 h-10 rounded-full bg-zinc-800 justify-center items-center"
-            >
-              <Ionicons name="arrow-back" size={22} color="#FF4141" />
-            </TouchableOpacity>
-            <Text className="text-white font-bold text-xl">Gym Buddies</Text>
-            <TouchableOpacity
-              onPress={() => console.log("Search")}
-              className="w-10 h-10 rounded-full bg-zinc-800 justify-center items-center"
-            >
-              <Ionicons name="search" size={22} color="#f1f5f9" />
-            </TouchableOpacity>
-          </View>
+         <View className="flex-row items-center mb-6 space-x-4">
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            className="p-2 bg-zinc-800/80 rounded-full"
+            activeOpacity={0.7}
+          >
+            <Ionicons name="chevron-back" size={22} color="white" />
+          </TouchableOpacity>
+          
+          <Text className="text-white text-2xl font-bold">Settings</Text>
+        </View>
 
           {/* Enhanced Tab Bar */}
           <View className="bg-zinc-800 rounded-xl p-1.5 mb-6">
@@ -662,7 +659,7 @@ const GymBuddyScreen = () => {
         )}
 
         {/* Add Buddy Button */}
-        {activeTab !== "blocked" && (
+        {/* {activeTab !== "blocked" && (
           <TouchableOpacity
             className="absolute bottom-6 right-6 bg-red-500 w-14 h-14 rounded-full justify-center items-center shadow-lg"
             style={{
@@ -675,7 +672,7 @@ const GymBuddyScreen = () => {
           >
             <Ionicons name="add" size={30} color="#ffffff" />
           </TouchableOpacity>
-        )}
+        )} */}
 
         {/* Custom Bottom Sheet Modal */}
         <Modal

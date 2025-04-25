@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
+import { Animated,ScrollView } from 'react-native';
 import {
   View,
   Text,
@@ -153,106 +154,111 @@ const ongoingPlans = categories.slice(0, 3);
           className="flex-1"
           keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
         >
-          <View className="flex-1 px-4 pt-4">
-            <Text className="text-white text-3xl font-bold mb-4">Explore</Text>
-            <Text className="text-gray-400 text-base mb-6">Find workouts, trainers, and fitness partners</Text>
-
-            {/* Search Bar */}
-            <View className="mb-6 relative z-20">
-              <SearchBar
-                value={search}
-                onChange={handleSearch}
-                onClear={clearSearch}
-                placeholder="Search workouts, trainers..."
-                autoFocus={false}
-              />
-
-              {/* Search Results Dropdown */}
-              {showResults && (
-                <View className="absolute top-14 left-0 right-0 bg-neutral-900 rounded-2xl shadow-xl overflow-hidden border border-neutral-800 z-20">
-                  {filteredResults.length > 0 ? (
-                    <FlatList
-                      data={filteredResults}
-                      keyExtractor={(item, index) => `result-${index}`}
-                      renderItem={renderSearchResult}
-                      keyboardShouldPersistTaps="handled"
-                      scrollEnabled={filteredResults.length > 5}
-                      maxToRenderPerBatch={10}
-                      initialNumToRender={5}
-                      style={{ maxHeight: 220 }}
-                    />
-                  ) : (
-                    <View className="p-4 items-center">
-                      <Text className="text-gray-400">No results found</Text>
-                    </View>
-                  )}
+          <View className="flex-1">
+            {/* Fixed Header */}
+            <View className="px-4 pt-4 pb-2 z-30">
+              <Text className="text-white text-3xl font-bold mb-1">Explore</Text>
+              <Text className="text-gray-400 text-base mb-3">Find workouts, trainers, and fitness partners</Text>
+            </View>
+  
+            {/* Sticky Search Bar */}
+            <Animated.View className="px-4 pb-2 z-20 bg-primary">
+              <View className="relative">
+                <SearchBar
+                  value={search}
+                  onChange={handleSearch}
+                  onClear={clearSearch}
+                  placeholder="Search workouts, trainers..."
+                  autoFocus={false}
+                />
+  
+                {/* Search Results Dropdown */}
+                {showResults && (
+                  <View className="absolute top-14 left-0 right-0 bg-neutral-900 rounded-2xl shadow-xl overflow-hidden border border-neutral-800 z-20">
+                    {filteredResults.length > 0 ? (
+                      <FlatList
+                        data={filteredResults}
+                        keyExtractor={(item, index) => `result-${index}`}
+                        renderItem={renderSearchResult}
+                        keyboardShouldPersistTaps="handled"
+                        scrollEnabled={filteredResults.length > 5}
+                        maxToRenderPerBatch={10}
+                        initialNumToRender={5}
+                        style={{ maxHeight: 220 }}
+                      />
+                    ) : (
+                      <View className="p-4 items-center">
+                        <Text className="text-gray-400">No results found</Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            </Animated.View>
+  
+            {/* Scrollable Content */}
+            <ScrollView 
+              className="flex-1"
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+              keyboardShouldPersistTaps="handled"
+            >
+              {/* Popular Searches Tags */}
+              {!showResults && (
+                <View className="mb-6 mt-2">
+                  <Text className="text-white font-medium text-base mb-2">Popular Searches</Text>
+                  <View className="flex-row flex-wrap">
+                    {popularSearches.map((item, index) => (
+                      <TouchableOpacity
+                        key={`popular-${index}`}
+                        className="bg-neutral-800 px-3 py-1.5 rounded-full mr-2 mb-1"
+                        onPress={() => handleSearch(item)}
+                      >
+                        <Text className="text-white text-sm">{item}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
               )}
-            </View>
-
-            {/* Popular Searches Tags */}
-            {!showResults && (
-              <View className="mb-4">
-              <Text className="text-white font-medium text-base mb-2">Popular Searches</Text>
-              <View className="flex-row flex-wrap">
-                {popularSearches.map((item, index) => (
-                  <TouchableOpacity
-                    key={`popular-${index}`}
-                    className="bg-neutral-800 px-3 py-1.5 rounded-full mr-2 mb-1"
-                    onPress={() => handleSearch(item)}
-                  >
-                    <Text className="text-white text-sm">{item}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-            
-            )}
-
-            {/* Categories Section */}
-            {!showResults && (
-              <View className="flex-1">
-                <View className="items-center mb-4 mt-3">
-  <Text className="text-white font-bold text-2xl">Workout Categories</Text>
-</View>
-
-<View className="items-center mb-4">
-  <View className="flex-row bg-neutral-800 rounded-full p-0.5">
-    {["ongoing", "all"].map((tab) => (
-      <Pressable
-        key={tab}
-        onPress={() => setSelectedTab(tab as "ongoing" | "all")}
-        className={`px-4 py-1.5 rounded-full ${
-          selectedTab === tab ? "bg-white" : ""
-        }`}
-      >
-        <Text
-          className={`text-xs font-medium ${
-            selectedTab === tab ? "text-black" : "text-white"
-          }`}
-        >
-          {tab === "ongoing" ? "Ongoing" : "All Plans"}
-        </Text>
-      </Pressable>
-    ))}
-  </View>
-</View>
-
-
-
-
-<FlatList
-  data={selectedTab === "ongoing" ? ongoingPlans : categories}
-  keyExtractor={(item) => item.id}
-  renderItem={renderCategoryItem}
-  showsVerticalScrollIndicator={false}
-  contentContainerStyle={{ paddingBottom: 40 }}
-  initialNumToRender={4}
-  maxToRenderPerBatch={4}
-/>
-
-              </View>
-            )}
+  
+              {/* Categories Section */}
+              {!showResults && (
+                <View className="mb-20">
+                  <View className="items-center mb-4 mt-3">
+                    <Text className="text-white font-bold text-2xl">Workout Categories</Text>
+                  </View>
+  
+                  <View className="items-center mb-4">
+                    <View className="flex-row bg-neutral-800 rounded-full p-0.5">
+                      {["ongoing", "all"].map((tab) => (
+                        <Pressable
+                          key={tab}
+                          onPress={() => setSelectedTab(tab as "ongoing" | "all")}
+                          className={`px-4 py-1.5 rounded-full ${
+                            selectedTab === tab ? "bg-white" : ""
+                          }`}
+                        >
+                          <Text
+                            className={`text-xs font-medium ${
+                              selectedTab === tab ? "text-black" : "text-white"
+                            }`}
+                          >
+                            {tab === "ongoing" ? "Ongoing" : "All Plans"}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  </View>
+  
+                  {/* Replace FlatList with map to allow nesting in ScrollView */}
+                  {(selectedTab === "ongoing" ? ongoingPlans : categories).map((item) => (
+                    <View key={item.id} className="mb-4">
+                      {renderCategoryItem({ item })}
+                    </View>
+                  ))}
+                </View>
+              )}
+            </ScrollView>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>

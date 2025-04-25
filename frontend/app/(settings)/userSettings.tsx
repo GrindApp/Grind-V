@@ -98,12 +98,19 @@ const SettingsScreen = () => {
     <SafeAreaView className="bg-primary flex-1">
       <ScrollView className="flex-1 px-5 py-6">
         {/* Header */}
-        <View className="flex-row justify-between items-center mb-6">
-          <Text className="text-white text-2xl font-bold">Settings</Text>
-          <TouchableOpacity>  
-            <MaterialCommunityIcons name="logout" size={24} color="#A1A1AA" />
-          </TouchableOpacity>
-        </View>
+        
+        <View className="flex-row items-center mb-6 space-x-4">
+  <TouchableOpacity 
+    onPress={() => router.back()}
+    className="p-2 bg-zinc-800/80 rounded-full"
+    activeOpacity={0.7}
+  >
+    <Ionicons name="chevron-back" size={22} color="white" />
+  </TouchableOpacity>
+  
+  <Text className="text-white text-2xl font-bold">Settings</Text>
+</View>
+
 
         {/* Profile */}
         <View className="flex-row items-center justify-between mb-7 bg-[#1C1C1E] px-5 py-5 rounded-2xl">

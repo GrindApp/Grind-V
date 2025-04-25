@@ -91,14 +91,14 @@ const ActivitySlider: React.FC = () => {
   ), [renderHeader]);
 
   const WeeklyGoalsCard = useMemo(() => (
-    <View className="bg-zinc-900 mx-3 p-4 rounded-2xl shadow-lg">
+    <View className="bg-zinc-900 mx-4 p-6 rounded-3xl shadow-xl h-[320px] justify-between">
       {renderHeader('Daily Goals', 'Track your fitness targets',
-        // <TouchableOpacity className="bg-zinc-800 rounded-lg p-1.5">
-        //   <Ionicons name="add" size={16} color="#FFF" />
-        // </TouchableOpacity>
+        <TouchableOpacity className="bg-zinc-800 rounded-full p-2">
+          <Ionicons name="ellipsis-horizontal" size={18} color="#A1A1AA" />
+        </TouchableOpacity>
       )}
       
-      <ScrollView className="max-h-32 my-2">
+      <ScrollView className="flex-1 my-2">
         <View className="flex-row flex-wrap">
           {goals.map((goal, idx) => {
             const selected = checkedGoals.includes(goal);
@@ -143,7 +143,7 @@ const ActivitySlider: React.FC = () => {
   ), [checkedGoals, goals, renderHeader, toggleGoal]);
 
   const TrackProgressionCard = useMemo(() => (
-    <View className="bg-zinc-900 mx-4 p-6 rounded-3xl shadow-xl h-[320px]">
+    <View className="bg-zinc-900 mx-4 p-6 rounded-3xl shadow-xl h-[320px] justify-between">
       {renderHeader('Track Progression', 'Daily exercise completion',
         <View className="bg-red-500 px-3.5 py-1.5 rounded-xl">
           <Text className="text-white font-bold text-base">25%</Text>
@@ -180,31 +180,31 @@ const ActivitySlider: React.FC = () => {
 
   return (
     <View className="mt-4">
-      <Carousel
-        loop
-        pagingEnabled
-        snapEnabled
-        width={width}
-        height={360}
-        autoPlay={false}
-        data={CARDS}
-        scrollAnimationDuration={400}
-        onProgressChange={(_, absoluteProgress) => setActiveSlide(Math.round(absoluteProgress) % 3)}
-        renderItem={({ item }) => item}
-      />
+  <Carousel
+    loop
+    pagingEnabled
+    snapEnabled
+    width={width}
+    height={360}
+    autoPlay={false}
+    data={CARDS}
+    scrollAnimationDuration={400}
+    onProgressChange={(_, absoluteProgress) => setActiveSlide(Math.round(absoluteProgress) % 3)}
+    renderItem={({ item }) => item}
+  />
 
-      <View className="flex-row justify-center mt-4 space-x-2">
-        {[0, 1, 2].map((idx) => (
-          <View
-            key={idx}
-            className={clsx(
-              'h-2 rounded-full transition-all duration-200',
-              activeSlide === idx ? 'w-6 bg-red-500' : 'w-2 bg-zinc-600'
-            )}
-          />
-        ))}
-      </View>
-    </View>
+  <View className="flex-row justify-center mt-2 space-x-2">
+    {[0, 1, 2].map((idx) => (
+      <View
+        key={idx}
+        className={clsx(
+          'h-1 rounded-full transition-all duration-200',
+          activeSlide === idx ? 'w-6 bg-red-500' : 'w-2 bg-zinc-600'
+        )}
+      />
+    ))}
+  </View>
+</View>
   );
 };
 

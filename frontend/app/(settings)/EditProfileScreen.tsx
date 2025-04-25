@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert } fro
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { router } from "expo-router";
 
 const EditProfileScreen = () => {
   const [formData, setFormData] = useState({
@@ -64,24 +65,24 @@ const EditProfileScreen = () => {
         className="px-5"
       >
         {/* Header */}
-        <View className="flex-row items-center justify-between mt-2 mb-8">
-          <View className="flex-row items-center">
-            <TouchableOpacity className="p-2 bg-[#1C1C1E] rounded-full">
-              <Ionicons name="arrow-back" size={22} color="#FF3B30" />
-            </TouchableOpacity>
-            <Text className="text-white text-xl font-semibold ml-3">Edit Profile</Text>
-          </View>
-          <TouchableOpacity onPress={handleSaveChanges}>
-            <Text className="text-red-500 font-medium">Done</Text>
-          </TouchableOpacity>
-        </View>
+        <View className="flex-row items-center mb-6 space-x-4">
+         <TouchableOpacity 
+           onPress={() => router.back()}
+           className="p-2 bg-zinc-800/80 rounded-full"
+           activeOpacity={0.7}
+         >
+           <Ionicons name="chevron-back" size={22} color="white" />
+         </TouchableOpacity>
+         
+         <Text className="text-white text-2xl font-bold">Edit Profile</Text>
+       </View>
 
         {/* Profile Pictures */}
         <View className="flex-row justify-around mb-10">
           {/* Profile Pic */}
           <View className="items-center">
             <View className="relative mb-3">
-              <View className="w-32 h-32 rounded-full overflow-hidden border-2 border-red-500">
+              <View className="w-32 h-32 rounded-full overflow-hidden border-2 border-accent">
                 <Image
                   source={{ uri: profileImage }}
                   className="w-full h-full"
@@ -89,7 +90,7 @@ const EditProfileScreen = () => {
                 />
               </View>
               <TouchableOpacity 
-                className="absolute bottom-0 right-0 bg-red-500 p-2 rounded-full shadow"
+                className="absolute bottom-0 right-0 bg-accent p-2 rounded-full shadow"
                 onPress={() => pickImage('profile')}
               >
                 <Feather name="camera" size={16} color="white" />
@@ -109,7 +110,7 @@ const EditProfileScreen = () => {
                 />
               </View>
               <TouchableOpacity 
-                className="absolute bottom-0 right-0 bg-red-500 p-2 rounded-full shadow"
+                className="absolute bottom-0 right-0 bg-accent p-2 rounded-full shadow"
                 onPress={() => pickImage('grind')}
               >
                 <Feather name="camera" size={16} color="white" />
@@ -168,7 +169,7 @@ const EditProfileScreen = () => {
                 numberOfLines={3}
                 textAlignVertical="top"
               />
-              <Text className={`absolute bottom-2 right-4 text-xs ${bioCharCount > MAX_BIO_CHARS * 0.8 ? 'text-red-500' : 'text-gray-500'}`}>
+              <Text className={`absolute bottom-2 right-4 text-xs ${bioCharCount > MAX_BIO_CHARS * 0.8 ? 'text-accent' : 'text-gray-500'}`}>
   {bioCharCount}/{MAX_BIO_CHARS}
 </Text>
 
@@ -208,7 +209,7 @@ const EditProfileScreen = () => {
 
         {/* Save Button */}
         <TouchableOpacity 
-          className="mt-6 py-4 bg-red-600 rounded-xl items-center shadow"
+          className="mt-6 py-4 bg-accent rounded-xl items-center shadow"
           onPress={handleSaveChanges}
         >
           <Text className="text-white font-bold tracking-wide text-base">SAVE CHANGES</Text>

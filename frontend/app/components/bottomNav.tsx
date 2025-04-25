@@ -54,6 +54,17 @@ const BottomNav: React.FC = () => {
   </Text>
 </TouchableOpacity>
 
+<TouchableOpacity onPress={() => router.push('/fitness-dasboard')} className="items-center">
+  <Feather
+    name="book"
+    size={22}
+    color={isActive('/fitness-dasboard') ? '#FF3B30' : '#D1D1D6'}
+  />
+  <Text className={`text-xs mt-1 ${isActive('/fitness-dasboard') ? 'text-accent' : 'text-gray-400'}`}>
+    My Lore
+  </Text>
+</TouchableOpacity>
+
 
 
 

@@ -149,20 +149,18 @@ const SavedGyms = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-[#121214]">
+    <SafeAreaView className="flex-1 bg-primary">
       {/* Header with back button */}
-      <View className="px-4 pt-2 pb-3">
-        <View className="flex-row items-center justify-between">
-          <TouchableOpacity 
-            onPress={() => router.back()}
-            className="p-2 bg-zinc-800/80 rounded-full"
-            activeOpacity={0.7}
-          >
-            <Ionicons name="chevron-back" size={22} color="white" />
-          </TouchableOpacity>
-          <Text className="text-white text-lg font-semibold">Saved Items</Text>
-          <View className="w-10" />
-        </View>
+       <View className="flex-row items-center mb-6 space-x-4">
+        <TouchableOpacity 
+          onPress={() => router.back()}
+          className="p-2 bg-zinc-800/80 rounded-full"
+          activeOpacity={0.7}
+        >
+          <Ionicons name="chevron-back" size={22} color="white" />
+        </TouchableOpacity>
+        
+        <Text className="text-white text-2xl font-bold">Saved</Text>
       </View>
 
       {/* Tabs */}
@@ -175,7 +173,7 @@ const SavedGyms = () => {
             <TouchableOpacity
               key={tab.id}
               className={`flex-1 flex-row items-center justify-center py-2.5 px-3 rounded-lg ${
-                activeTab === tab.id ? "bg-red-600" : "bg-transparent"
+                activeTab === tab.id ? "bg-accent" : "bg-transparent"
               }`}
               onPress={() => setActiveTab(tab.id)}
               activeOpacity={0.7}

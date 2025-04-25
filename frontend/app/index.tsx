@@ -23,6 +23,7 @@ export default function Index() {
       <Link href={"/(onboarding)/photos_screen"}>photos</Link>
       <Link href={"/(onboarding)/house_rules"}>house</Link>
       <Link href={"/(onboarding)/name"}>name</Link>
+      <Link href={"/(tabs)/(fitness-dashboard)/fitness-dasboard"}>Dashbaord</Link>
       
       
     </View>

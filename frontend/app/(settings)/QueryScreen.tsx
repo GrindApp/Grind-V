@@ -13,6 +13,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from "expo-router";
 
 const QueryScreen = () => {
   const [name, setName] = useState('');
@@ -115,22 +116,16 @@ const QueryScreen = () => {
       />
       
       {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12, paddingHorizontal: 24, marginBottom: 24 }}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            backgroundColor: '#333333',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginRight: 16,
-          }}
+       <View className="flex-row items-center mb-6 space-x-4">
+        <TouchableOpacity 
+          onPress={() => router.back()}
+          className="p-2 bg-zinc-800/80 rounded-full"
+          activeOpacity={0.7}
         >
-          <Ionicons name="arrow-back" size={22} color="#FF4141" />
+          <Ionicons name="chevron-back" size={22} color="white" />
         </TouchableOpacity>
-        <Text style={{ color: '#FFFFFF', fontSize: 20, fontWeight: '700' }}>Get Support</Text>
+        
+        <Text className="text-white text-2xl font-bold">Support</Text>
       </View>
 
       <KeyboardAvoidingView
@@ -204,7 +199,7 @@ const QueryScreen = () => {
               borderRadius: 12,
               backgroundColor: isFormValid ? '#EF4444' : '#3D3D3D',
               alignItems: 'center',
-              shadowColor: isFormValid ? "#EF4444" : "#000",
+              shadowColor: isFormValid ? "#accent" : "#000",
               shadowOpacity: isFormValid ? 0.3 : 0.2,
               shadowRadius: 10,
               shadowOffset: { width: 0, height: 5 },
@@ -212,7 +207,7 @@ const QueryScreen = () => {
             onPress={handleSubmit}
             disabled={!isFormValid}
           >
-            <Text style={{ color: '#FFFFFF', fontWeight: '700', fontSize: 16 }}>SUBMIT QUERY</Text>
+            <Text style={{ color: 'white', fontWeight: '700', fontSize: 16 }}>SUBMIT QUERY</Text>
           </TouchableOpacity>
           
           {/* Alternative contact method */}
