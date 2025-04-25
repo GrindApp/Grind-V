@@ -43,13 +43,13 @@ const BottomNav: React.FC = () => {
 
 
         {/* Search */}
-        <TouchableOpacity onPress={() => router.push('/explore')} className="items-center">
+        <TouchableOpacity onPress={() => router.push('/exercises')} className="items-center">
   <Feather
     name="search"
     size={22}
-    color={isActive('/explore') ? '#FF3B30' : '#D1D1D6'}
+    color={isActive('/exercises') ? '#FF3B30' : '#D1D1D6'}
   />
-  <Text className={`text-xs mt-1 ${isActive('/explore') ? 'text-accent' : 'text-gray-400'}`}>
+  <Text className={`text-xs mt-1 ${isActive('/exercises') ? 'text-accent' : 'text-gray-400'}`}>
     Explore
   </Text>
 </TouchableOpacity>
