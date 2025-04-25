@@ -13,38 +13,40 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
 
-import ActivityCarousel from '../../components/homepage/ActivityCarousel';
 import RatingArenas from '../../components/homepage/RatingArenas';
 import CategoryGrid from '../../components/homepage/CategoryGrid';
 import GymList from '../../components/homepage/GymList';
 import Sidebar from '../../components/sideBar';
+import SearchBar from '../../components/SearchBar';
+import DailyTasks from '@/app/components/homepage/DailyGoals';
 
 const { width: screenWidth } = Dimensions.get('window');
-const SIDEBAR_WIDTH = screenWidth * 0.8;
+const SIDEBAR_WIDTH = screenWidth * 0.75; 
 
 const HomeScreen = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const router = useRouter();
 
   const sections = useMemo(() => [
-    { key: 'activity', render: () => <ActivityCarousel /> },
+    { key: 'activity', render: () => <DailyTasks /> },
     { key: 'rating', render: () => <RatingArenas /> },
     { key: 'category', render: () => <CategoryGrid /> },
-    { key: 'gyms', render: () => <GymList /> },
-  ], []);
+    { key: 'gyms', render: () => <GymList searchQuery={searchQuery} /> },
+  ], [searchQuery]);
 
   const animateSidebar = useCallback((open: boolean) => {
     Animated.parallel([
       Animated.timing(slideAnim, {
         toValue: open ? 0 : -SIDEBAR_WIDTH,
-        duration: 250,
+        duration: 200,
         useNativeDriver: true,
       }),
       Animated.timing(fadeAnim, {
         toValue: open ? 1 : 0,
-        duration: 250,
+        duration: 200,
         useNativeDriver: true,
       })
     ]).start();
@@ -71,17 +73,42 @@ const HomeScreen = () => {
     }
   }), []);
 
+  const handleSearch = () => {
+    console.log('Searching for:', searchQuery);
+  };
+
   const renderHeader = useCallback(() => (
-    <View className="flex-row justify-between items-center px-4 py-3 bg-[#1C1C1E]">
-      <TouchableOpacity onPress={() => setIsSidebarOpen(true)}>
-        <Ionicons name="menu" size={26} color="white" />
-      </TouchableOpacity>
-      <Text className="text-white text-lg font-semibold tracking-wider">GRIND</Text>
-      <TouchableOpacity onPress={() => router.push("/(chat)/friendList")}>
-        <Ionicons name="chatbubble-outline" size={24} color="white" />
-      </TouchableOpacity>
+    <View className="bg-black">
+      {/* Compact header with integrated search */}
+      <View className="flex-row items-center px-2 py-2.5 bg-[#121214] rounded-b-lg shadow">
+        <TouchableOpacity 
+          onPress={() => setIsSidebarOpen(true)}
+          className="p-1.5 mr-2"
+        >
+          <Ionicons name="menu" size={22} color="white" />
+        </TouchableOpacity>
+        
+        {/* Integrated search bar */}
+        <View className="flex-1 mx-1">
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onClear={() => setSearchQuery('')}
+            placeholder="Search gyms, facilities..."
+            onSubmit={handleSearch}
+          />
+        </View>
+        
+        <TouchableOpacity 
+          onPress={() => router.push("/(chat)/friendList")}
+          className="p-1.5 ml-2"
+        >
+          <Ionicons name="chatbubble-outline" size={22} color="white" />
+        </TouchableOpacity>
+      </View>
+      
     </View>
-  ), []);
+  ), [searchQuery]);
 
   return (
     <SafeAreaView className="flex-1 bg-[#1C1C1E]">
@@ -90,12 +117,14 @@ const HomeScreen = () => {
       <FlatList
         data={sections}
         keyExtractor={(item) => item.key}
-        renderItem={({ item }) => <View className="mb-5">{item.render()}</View>}
+        renderItem={({ item }) => (
+          <View className="mb-2 px-1">{item.render()}</View>
+        )}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        initialNumToRender={4}
-        maxToRenderPerBatch={4}
-        windowSize={5}
+        contentContainerStyle={{ paddingBottom: 16 }}
+        initialNumToRender={2}
+        maxToRenderPerBatch={2}
+        windowSize={4}
         removeClippedSubviews
       />
 
@@ -103,11 +132,11 @@ const HomeScreen = () => {
       {isSidebarOpen && (
         <>
           <Animated.View
-            className="absolute inset-0"
+            className="absolute inset-0 z-10"
             style={{ opacity: fadeAnim }}
             pointerEvents="auto"
           >
-            <BlurView intensity={30} tint="dark" className="absolute inset-0">
+            <BlurView intensity={40} tint="dark" className="absolute inset-0">
               <TouchableOpacity
                 className="absolute inset-0"
                 onPress={() => setIsSidebarOpen(false)}
@@ -117,12 +146,12 @@ const HomeScreen = () => {
           </Animated.View>
 
           <Animated.View
-            className="absolute top-0 left-0 h-full"
+            className="absolute top-0 left-0 h-full z-20 shadow-lg"
             style={{ width: SIDEBAR_WIDTH, transform: [{ translateX: slideAnim }] }}
             {...panResponder.panHandlers}
           >
-            <View className="absolute right-0 top-0 bottom-0 w-5 items-center justify-center z-10">
-              <View className="h-12 w-1 bg-white/20 rounded" />
+            <View className="absolute right-0 top-0 bottom-0 w-4 items-center justify-center">
+              <View className="h-10 w-1 bg-white/20 rounded-full" />
             </View>
             <Sidebar onClose={() => setIsSidebarOpen(false)} />
           </Animated.View>

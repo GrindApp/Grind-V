@@ -105,6 +105,7 @@ const DOBScreen = () => {
           onConfirm={handleDateChange}
           onCancel={() => setShowPicker(false)}
           maximumDate={new Date()}
+          minimumDate={new Date(new Date().setFullYear(new Date().getFullYear() - 100))}
           date={date || new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
         />
 

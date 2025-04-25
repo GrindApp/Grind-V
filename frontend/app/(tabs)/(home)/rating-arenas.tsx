@@ -77,6 +77,7 @@ const RatingArenasPage = () => {
             distance={item.distance}
             rating={item.rating}
             tags={item.tags}
+            price='₹999/mo'
             onPress={() => {
               // optional: handle navigation or open modal
             }}

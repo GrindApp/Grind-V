@@ -78,6 +78,173 @@ const sampleMessages: Message[] = [
   },
 ];
 
+// Utility functions
+const formatTime = (date: Date) => {
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+const formatDate = (date: Date) => {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  if (date.toDateString() === today.toDateString()) {
+    return 'Today';
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return 'Yesterday';
+  } else {
+    return date.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+};
+
+// Components
+const ChatHeader = ({ contact, onBack }: { contact: any; onBack: () => void }) => (
+  <View className="flex-row items-center px-4 py-3 border-b border-primary bg-primary">
+    <TouchableOpacity 
+      className="mr-3"
+      onPress={onBack}
+    >
+      <Ionicons name="chevron-back" size={24} color="white" />
+    </TouchableOpacity>
+    
+    <Image 
+      source={{ uri: contact.image }} 
+      className="w-10 h-10 rounded-full"
+    />
+    
+    <View className="flex-1 ml-3">
+      <Text className="text-white font-medium text-base">
+        {contact.name}
+      </Text>
+      <Text className="text-green-500 text-xs">
+        {contact.status === 'online' ? 'Online' : contact.status}
+      </Text>
+    </View>
+    
+    <TouchableOpacity className="p-2">
+      <Feather name="phone" size={20} color="white" />
+    </TouchableOpacity>
+    
+    <TouchableOpacity className="p-2 ml-2">
+      <Feather name="more-vertical" size={20} color="white" />
+    </TouchableOpacity>
+  </View>
+);
+
+const DateHeader = ({ date }: { date: any }) => (
+  <View className="py-2 items-center">
+    <Text className="text-secondary text-xs bg-primary px-3 py-1 rounded-full">
+      {date}
+    </Text>
+  </View>
+);
+
+const MessageStatus = ({ status }: { status: string }) => {
+  if (!status) return null;
+  
+  const iconMap: { [key: string]: JSX.Element } = {
+    sent: <Ionicons name="checkmark" size={16} color="#777" />,
+    delivered: <Ionicons name="checkmark-done" size={16} color="#777" />,
+    read: <Ionicons name="checkmark-done" size={16} color="#3b82f6" />
+  };
+  
+  return iconMap[status] || "";
+};
+
+const MessageBubble = ({ message, contactImage }: { message: Message; contactImage: string }) => (
+  <View 
+    className={`flex-row my-1 mx-3 ${
+      message.sender === 'user' ? 'justify-end' : 'justify-start'
+    }`}
+  >
+    {message.sender === 'other' && (
+      <Image 
+        source={{ uri: contactImage }} 
+        className="w-8 h-8 rounded-full mr-2 mt-1"
+      />
+    )}
+    
+    <View className="max-w-[75%] flex-row">
+      <View 
+        className={`px-4 py-2.5 rounded-2xl ${
+          message.sender === 'user' 
+            ? 'bg-accent rounded-tr-none' 
+            : 'bg-primary rounded-tl-none'
+        }`}
+      >
+        <Text className="text-white">
+          {message.text}
+        </Text>
+        
+        <View className="flex-row items-center justify-end mt-1">
+          <Text className="text-xs text-gray-300 mr-1">
+            {formatTime(message.timestamp)}
+          </Text>
+          {message.sender === 'user' && <MessageStatus status={message.status || ''} />}
+        </View>
+      </View>
+    </View>
+  </View>
+);
+
+const TypingIndicator = ({ isVisible, contactImage }: { isVisible: boolean; contactImage: string }) => {
+  if (!isVisible) return null;
+  
+  return (
+    <View className="flex-row items-center mx-4 mb-2">
+      <Image 
+        source={{ uri: contactImage }} 
+        className="w-8 h-8 rounded-full mr-2"
+      />
+      <View className="bg-primary px-4 py-3 rounded-2xl rounded-tl-none">
+        <View className="flex-row items-center space-x-1">
+          <View className="w-2 h-2 bg-secondary rounded-full animate-bounce" />
+          <View className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+          <View className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const ChatInput = ({ inputText, setInputText, handleSend }: { inputText: string; setInputText: (text: string) => void; handleSend: () => void }) => (
+  <View className="flex-row items-center px-4 py-2 border-t border-primary bg-black">
+    <TouchableOpacity className="p-2 mr-2">
+      <Feather name="plus-circle" size={24} color="#777" />
+    </TouchableOpacity>
+    
+    <View className="flex-1 flex-row items-center bg-primary rounded-full px-4 py-2">
+      <TextInput
+        className="flex-1 text-white"
+        placeholder="Type a message..."
+        placeholderTextColor="#777"
+        value={inputText}
+        onChangeText={setInputText}
+        multiline
+        maxLength={500}
+      />
+      
+      <TouchableOpacity className="ml-2 p-1">
+        <Feather name="smile" size={20} color="#777" />
+      </TouchableOpacity>
+    </View>
+    
+    <TouchableOpacity 
+      className={`p-2 ml-2 ${!inputText.trim() ? 'opacity-50' : ''}`}
+      onPress={handleSend}
+      disabled={!inputText.trim()}
+    >
+      <View className="bg-accent w-10 h-10 rounded-full items-center justify-center">
+        <Feather name="send" size={18} color="white" />
+      </View>
+    </TouchableOpacity>
+  </View>
+);
+
+// Main component
 const ChatDetailScreen: React.FC<ChatDetailProps> = ({ route }) => {
   const navigation = useNavigation();
   // If no route params are provided, use default values
@@ -194,93 +361,14 @@ const ChatDetailScreen: React.FC<ChatDetailProps> = ({ route }) => {
     return replies[Math.floor(Math.random() * replies.length)];
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const formatDate = (date: Date) => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString([], {
-        month: 'short',
-        day: 'numeric',
-      });
-    }
-  };
-
-  const renderMessageStatus = (status?: string) => {
-    if (!status) return null;
-    
-    switch (status) {
-      case 'sent':
-        return <Ionicons name="checkmark" size={16} color="#777" />;
-      case 'delivered':
-        return <Ionicons name="checkmark-done" size={16} color="#777" />;
-      case 'read':
-        return <Ionicons name="checkmark-done" size={16} color="#3b82f6" />;
-      default:
-        return null;
-    }
-  };
-
   const renderItem = ({ item, index }: { item: Message; index: number }) => {
     const showDateHeader = index === 0 || 
       formatDate(item.timestamp) !== formatDate(messages[index - 1].timestamp);
     
     return (
       <>
-        {showDateHeader && (
-          <View className="py-2 items-center">
-            <Text className="text-gray-500 text-xs bg-neutral-800 px-3 py-1 rounded-full">
-              {formatDate(item.timestamp)}
-            </Text>
-          </View>
-        )}
-        
-        <View 
-          className={`flex-row my-1 mx-3 ${
-            item.sender === 'user' ? 'justify-end' : 'justify-start'
-          }`}
-        >
-          {item.sender === 'other' && (
-            <Image 
-              source={{ uri: contact.image }} 
-              className="w-8 h-8 rounded-full mr-2 mt-1"
-            />
-          )}
-          
-          <View className="max-w-[75%] flex-row">
-            <View 
-              className={`px-4 py-2.5 rounded-2xl ${
-                item.sender === 'user' 
-                  ? 'bg-red-500 rounded-tr-none' 
-                  : 'bg-neutral-800 rounded-tl-none'
-              }`}
-            >
-              <Text 
-                className={`${
-                  item.sender === 'user' ? 'text-white' : 'text-white'
-                }`}
-              >
-                {item.text}
-              </Text>
-              
-              <View className="flex-row items-center justify-end mt-1">
-                <Text className="text-xs text-gray-300 mr-1">
-                  {formatTime(item.timestamp)}
-                </Text>
-                {item.sender === 'user' && renderMessageStatus(item.status)}
-              </View>
-            </View>
-          </View>
-        </View>
+        {showDateHeader && <DateHeader date={formatDate(item.timestamp)} />}
+        <MessageBubble message={item} contactImage={contact.image} />
       </>
     );
   };
@@ -289,39 +377,11 @@ const ChatDetailScreen: React.FC<ChatDetailProps> = ({ route }) => {
     <SafeAreaView className="flex-1 bg-black" edges={['right', 'left', 'top']}>
       <StatusBar barStyle="light-content" />
       
-      {/* Header */}
-      <View className="flex-row items-center px-4 py-3 border-b border-neutral-800">
-        <TouchableOpacity 
-          className="mr-3"
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="chevron-back" size={24} color="white" />
-        </TouchableOpacity>
-        
-        <Image 
-          source={{ uri: contact.image }} 
-          className="w-10 h-10 rounded-full"
-        />
-        
-        <View className="flex-1 ml-3">
-          <Text className="text-white font-medium text-base">
-            {contact.name}
-          </Text>
-          <Text className="text-green-500 text-xs">
-            {contact.status === 'online' ? 'Online' : contact.status}
-          </Text>
-        </View>
-        
-        <TouchableOpacity className="p-2">
-          <Feather name="phone" size={20} color="white" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity className="p-2 ml-2">
-          <Feather name="more-vertical" size={20} color="white" />
-        </TouchableOpacity>
-      </View>
+      <ChatHeader 
+        contact={contact} 
+        onBack={() => navigation.goBack()} 
+      />
       
-      {/* Messages */}
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -337,55 +397,16 @@ const ChatDetailScreen: React.FC<ChatDetailProps> = ({ route }) => {
           showsVerticalScrollIndicator={false}
         />
         
-        {/* Typing indicator */}
-        {isTyping && (
-          <View className="flex-row items-center mx-4 mb-2">
-            <Image 
-              source={{ uri: contact.image }} 
-              className="w-8 h-8 rounded-full mr-2"
-            />
-            <View className="bg-neutral-800 px-4 py-3 rounded-2xl rounded-tl-none">
-              <View className="flex-row items-center">
-                <View className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                <View className="w-2 h-2 bg-gray-400 rounded-full mx-1 animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <View className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
-              </View>
-            </View>
-          </View>
-        )}
+        <TypingIndicator 
+          isVisible={isTyping} 
+          contactImage={contact.image} 
+        />
         
-        {/* Input area */}
-        <View className="flex-row items-center px-4 py-2 border-t border-neutral-800">
-          <TouchableOpacity className="p-2 mr-2">
-            <Feather name="plus-circle" size={24} color="#777" />
-          </TouchableOpacity>
-          
-          <View className="flex-1 flex-row items-center bg-neutral-800 rounded-full px-4 py-2">
-            <TextInput
-              className="flex-1 text-white"
-              placeholder="Type a message..."
-              placeholderTextColor="#777"
-              value={inputText}
-              onChangeText={setInputText}
-              multiline
-              maxLength={500}
-            />
-            
-            <TouchableOpacity className="ml-2 p-1">
-              <Feather name="smile" size={20} color="#777" />
-            </TouchableOpacity>
-          </View>
-          
-          <TouchableOpacity 
-            className={`p-2 ml-2 ${!inputText.trim() ? 'opacity-50' : ''}`}
-            onPress={handleSend}
-            disabled={!inputText.trim()}
-          >
-            <View className="bg-red-500 w-10 h-10 rounded-full items-center justify-center">
-              <Feather name="send" size={18} color="white" />
-            </View>
-          </TouchableOpacity>
-        </View>
+        <ChatInput 
+          inputText={inputText}
+          setInputText={setInputText}
+          handleSend={handleSend}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
