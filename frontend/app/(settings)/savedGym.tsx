@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import GymCard from "../components/GymCard";
-import { Alert, FlatList, TouchableOpacity, View, Text, Image } from "react-native";
+import { Alert, FlatList, TouchableOpacity, View, Text, Image , ScrollView,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeIn, FadeInRight } from "react-native-reanimated";
 
@@ -149,18 +149,20 @@ const SavedGyms = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-primary">
+   
+   <SafeAreaView className="flex-1 bg-primary">
+      <ScrollView className="flex-1 px-5 py-6">
       {/* Header with back button */}
-       <View className="flex-row items-center mb-6 space-x-4">
+       <View className="flex-row items-center mb-6  space-x-4">
         <TouchableOpacity 
           onPress={() => router.back()}
           className="p-2 bg-zinc-800/80 rounded-full"
           activeOpacity={0.7}
         >
-          <Ionicons name="chevron-back" size={22} color="white" />
+          <Ionicons name="chevron-back" size={18} color="white" />
         </TouchableOpacity>
         
-        <Text className="text-white text-2xl font-bold">Saved</Text>
+        <Text className="text-white text-2xl ml-2 font-bold">Saved</Text>
       </View>
 
       {/* Tabs */}
@@ -259,6 +261,8 @@ const SavedGyms = () => {
           </View>
         )
       )}
+      </ScrollView>
+   
     </SafeAreaView>
   );
 };

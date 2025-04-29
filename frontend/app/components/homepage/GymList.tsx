@@ -32,7 +32,7 @@ const GymList = ({ searchQuery = '' }: Props) => {
         rating: 4.5,
         facilities: ['Pool', 'Sauna', 'Weights'],
         categories: ['Strength', 'Cardio'],
-        imageUrl: 'https://example.com/image1.jpg',
+        imageUrl: 'https://media.istockphoto.com/id/1277242852/photo/holding-weight-and-sitting.jpg?s=2048x2048&w=is&k=20&c=d0xsKp-TW7fgBGzkoP3XBU8s1kOtOWbCKgL6Xu0jnhM=',
       },
       {
         id: '2',
@@ -41,7 +41,7 @@ const GymList = ({ searchQuery = '' }: Props) => {
         rating: 4.8,
         facilities: ['Personal Training', 'Classes', 'Weights'],
         categories: ['CrossFit', 'Bodybuilding'],
-        imageUrl: 'https://example.com/image2.jpg',
+        imageUrl: 'https://media.istockphoto.com/id/1437851885/photo/weight-training-equipment-in-a-modern-gym.jpg?s=612x612&w=0&k=20&c=_4JcrAtYd9tQHTSJkC5gCgawQsi6m3S8fbWKVlPFzqM=',
       },
     ];
     

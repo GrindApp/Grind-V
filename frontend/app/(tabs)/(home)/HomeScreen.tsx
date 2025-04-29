@@ -80,7 +80,7 @@ const HomeScreen = () => {
   const renderHeader = useCallback(() => (
     <View className="bg-primary">
       {/* Compact header with integrated search */}
-      <View className="flex-row items-center px-2 py-2.5 bg-[#121214] rounded-b-lg shadow">
+      <View className="flex-row items-center px-2 py-2.5 bg-[#99999] rounded-b-lg shadow">
         <TouchableOpacity 
           onPress={() => setIsSidebarOpen(true)}
           className="p-1.5 mr-2"

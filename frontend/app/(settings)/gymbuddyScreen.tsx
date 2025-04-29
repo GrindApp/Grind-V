@@ -312,95 +312,113 @@ const GymBuddyScreen = () => {
     ({ item }: { item: Buddy }) => {
       const isOnline = item.status === "Online";
       const isBlocked = activeTab === "blocked";
-
+  
+      // Enhanced UserDetails component with improved layout
       const UserDetails = () => (
-        <View className="flex-row items-start space-x-3 flex-1">
+        <View className="flex-row items-start space-x-4 flex-1">
+          {/* Profile image with status indicators */}
           <View className="relative">
             <Image
               source={{ uri: item.image }}
-              className={`w-14 h-14 rounded-full border-2 ${
-                isBlocked ? "border-red-800/40 opacity-80" : "border-zinc-700"
+              className={`w-16 h-16 rounded-full border-2 mr-2   ${
+                isBlocked ? "border-red-800/50 opacity-80" : "border-zinc-700"
               }`}
             />
+            
+            {/* Online status indicator */}
             {!isBlocked && isOnline && (
-              <View className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-zinc-900" />
+              <View className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 mr-2 border-zinc-900" />
             )}
+            
+            {/* Blocked indicator */}
             {isBlocked && (
-              <View className="absolute top-0 right-0 w-5 h-5 bg-red-500 rounded-full border border-zinc-900 items-center justify-center">
-                <Ionicons name="ban-outline" size={12} color="#ffffff" />
+              <View className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full border border-zinc-900 items-center justify-center">
+                <Ionicons name="ban-outline" size={14} color="#ffffff" />
               </View>
             )}
           </View>
-          <View className="flex-1 pt-0.5">
-            <View className="flex-row justify-between mb-1">
-              <Text className="text-white font-semibold text-base">
+          
+          {/* User info section */}
+          <View className="flex-1 pt-1">
+            {/* Name and status row */}
+            <View className="flex-row justify-between items-center mb-1 ml-2">
+              <Text className="text-white font-semibold text-lg">
                 {item.name}
               </Text>
               {!isOnline && item.status && !isBlocked && (
-                <Text className="text-zinc-400 text-xs">{item.status}</Text>
-              )}
-              {isBlocked && item.blockedDate && (
-                <Text className="text-red-400/70 text-xs">
-                  {item.blockedDate}
+                <Text className="text-zinc-400 text-xs">
+                  {item.status}
                 </Text>
               )}
+              {/* {isBlocked && item.blockedDate && (
+                <Text className="text-red-400/80 text-xs font-medium">
+                  {item.blockedDate}
+                </Text>
+              )} */}
             </View>
+            
+            {/* Message text with proper styling */}
             <Text
+              numberOfLines={2}
               className={`${
-                isBlocked ? "text-zinc-400" : "text-zinc-300"
+                isBlocked ? "text-zinc-500" : "text-zinc-300"
               } text-sm`}
             >
               {item.message}
             </Text>
+            
+            {/* Workout info with improved icon alignment */}
             {!isBlocked && item.lastWorkout && (
-              <View className="flex-row items-center mt-1">
-                <MaterialCommunityIcons
-                  name="dumbbell"
-                  size={14}
-                  color="#9CA3AF"
-                />
-                <Text className="text-zinc-400 text-xs ml-1.5">
+              <View className="flex-row items-center mt-2">
+                {/* <View className="bg-zinc-700/50 rounded-full p-1 mr-2">
+                  <MaterialCommunityIcons
+                    name="dumbbell"
+                    size={12}
+                    color="#9CA3AF"
+                  />
+                </View>
+                <Text className="text-zinc-400 text-xs">
                   {item.lastWorkout}
-                </Text>
+                </Text> */}
               </View>
             )}
           </View>
         </View>
       );
-
+  
+      // Enhanced card wrapper with proper shadow handling in NativeWind
       const Wrapper = ({ children }: { children: React.ReactNode }) => (
         <View
           className={`${
             isBlocked ? "bg-zinc-800/70" : "bg-zinc-800/90"
-          } mx-4 mb-4 px-4 py-4 rounded-2xl border ${
-            isBlocked ? "border-red-900/20" : "border-zinc-700/40"
-          } shadow-md`}
+          } mx-3 mb-3 px-4 py-4 rounded-2xl border ${
+            isBlocked ? "border-red-900/30" : "border-zinc-700/40"
+          }`}
           style={{
-            shadowColor: "#000",
-            shadowOpacity: 0.2,
-            shadowRadius: 10,
-            shadowOffset: { width: 0, height: 5 },
+           
+           
+            shadowOffset: { width: 0, height: 4 },
+            elevation: 5,
           }}
         >
           {children}
         </View>
       );
-
+  
       if (isBlocked) {
-        // Blocked user card
+        // Improved blocked user card
         return (
           <Wrapper>
-            <View className="flex-row items-start justify-between">
+            <View className="flex-row items-center justify-between">
               <UserDetails />
               <TouchableOpacity
                 onPress={() => handleUnblock(item)}
-                className="bg-zinc-700/80 px-4 h-10 rounded-xl justify-center items-center shadow-sm"
-                style={{
-                  shadowColor: "#34D399",
-                  shadowOpacity: 0.2,
-                  shadowRadius: 5,
-                  shadowOffset: { width: 0, height: 2 },
-                }}
+                className="bg-zinc-700/90 px-4 py-2 rounded-xl justify-center items-center ml-2"
+                // style={{
+                //   shadowOpacity: 0.2,
+                //   shadowRadius: 4,
+                //   shadowOffset: { width: 0, height: 2 },
+                // }}
               >
                 <Text className="text-green-400 text-sm font-medium">
                   Unblock
@@ -410,7 +428,7 @@ const GymBuddyScreen = () => {
           </Wrapper>
         );
       } else if (activeTab === "added") {
-        // Added buddies card with swipe action
+        // Enhanced added buddies card with swipe action
         return (
           <Swipeable
             ref={(ref) => (swipeableRefs.current[item.id] = ref)}
@@ -419,7 +437,7 @@ const GymBuddyScreen = () => {
             rightThreshold={40}
           >
             <TouchableOpacity
-              activeOpacity={0.9}
+              activeOpacity={0.8}
               onPress={() => console.log("Message", item.name)}
             >
               <Wrapper>
@@ -429,35 +447,35 @@ const GymBuddyScreen = () => {
           </Swipeable>
         );
       } else {
-        // Request card with accept/reject buttons
+        // Improved request card with accept/reject buttons
         return (
           <Wrapper>
-            <View className="flex-row items-start justify-between">
+            <View className="flex-row items-center justify-between">
               <UserDetails />
-              <View className="flex-row space-x-3">
+              <View className="flex-row space-x-3 ml-2">
                 <TouchableOpacity
                   onPress={() => handleReject(item)}
-                  className="bg-zinc-700/80 w-11 h-11 rounded-full justify-center items-center shadow-sm"
+                  className="bg-zinc-700/90 w-12 mr-2 h-12 rounded-full justify-center items-center"
                   style={{
-                    shadowColor: "#FF4040",
-                    shadowOpacity: 0.3,
-                    shadowRadius: 5,
+                   
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
                     shadowOffset: { width: 0, height: 2 },
                   }}
                 >
-                  <Ionicons name="close" size={20} color="#FF4040" />
+                  <Ionicons name="close" size={22} color="#FF4040" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleAccept(item)}
-                  className="bg-zinc-700/80 w-11 h-11 rounded-full justify-center items-center shadow-sm"
+                  className="bg-zinc-700/90 w-12 h-12 rounded-full justify-center items-center"
                   style={{
-                    shadowColor: "#34D399",
-                    shadowOpacity: 0.3,
-                    shadowRadius: 5,
+                    
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
                     shadowOffset: { width: 0, height: 2 },
                   }}
                 >
-                  <Ionicons name="checkmark" size={20} color="#34D399" />
+                  <Ionicons name="checkmark" size={22} color="#34D399" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -552,10 +570,10 @@ const GymBuddyScreen = () => {
             className="p-2 bg-zinc-800/80 rounded-full"
             activeOpacity={0.7}
           >
-            <Ionicons name="chevron-back" size={22} color="white" />
+            <Ionicons name="chevron-back" size={18} color="white" />
           </TouchableOpacity>
           
-          <Text className="text-white text-2xl font-bold">Settings</Text>
+          <Text className="text-white text-2xl font-bold"> Buddies</Text>
         </View>
 
           {/* Enhanced Tab Bar */}
@@ -583,25 +601,23 @@ const GymBuddyScreen = () => {
           </View>
         </View>
 
-        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
-          <FlatList
-            data={
-              activeTab === "requests"
-                ? buddies.requests
-                : activeTab === "added"
-                ? buddies.added
-                : buddies.blocked
-            }
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <BuddyCard item={item} />}
-            contentContainerStyle={{
-              paddingBottom: 32,
-              flexGrow: 1,
-            }}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={EmptyState}
-          />
-        </Animated.View>
+        <Animated.View className="flex-1" style={{ opacity: fadeAnim }}>
+  <FlatList
+    data={
+      activeTab === "requests"
+        ? buddies.requests
+        : activeTab === "added"
+        ? buddies.added
+        : buddies.blocked
+    }
+    keyExtractor={(item) => item.id}
+    renderItem={({ item }) => <BuddyCard item={item} />}
+    className="px-4"
+    contentContainerClassName="pb-8"
+    showsVerticalScrollIndicator={false}
+    ListEmptyComponent={EmptyState}
+  />
+</Animated.View>
 
         {/* Swipe Hint */}
         {showSwipeHint && activeTab === "added" && buddies.added.length > 0 && (

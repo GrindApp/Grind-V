@@ -105,10 +105,10 @@ const SettingsScreen = () => {
     className="p-2 bg-zinc-800/80 rounded-full"
     activeOpacity={0.7}
   >
-    <Ionicons name="chevron-back" size={22} color="white" />
+    <Ionicons name="chevron-back" size={18} color="white" />
   </TouchableOpacity>
   
-  <Text className="text-white text-2xl font-bold">Settings</Text>
+  <Text className="text-white text-2xl font-bold"> Settings</Text>
 </View>
 
 

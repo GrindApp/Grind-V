@@ -11,6 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 interface OtpModalProps {
   visible: boolean;
@@ -25,6 +26,7 @@ const OtpModal: React.FC<OtpModalProps> = ({ visible, onClose, phoneNumber = "+9
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
 
   const inputRefs = useRef<Array<RNTextInput | null>>([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (visible) {
@@ -94,7 +96,10 @@ const OtpModal: React.FC<OtpModalProps> = ({ visible, onClose, phoneNumber = "+9
 
       if (enteredOtp === '123456') {
         Alert.alert('Success', 'Phone number verified successfully!');
-        onClose();
+        onClose(); 
+        router.push('/(onboarding)/house_rules');
+        
+
       } else {
         Alert.alert('Verification Failed', 'The OTP you entered is incorrect. Please try again.');
         resetOtp();

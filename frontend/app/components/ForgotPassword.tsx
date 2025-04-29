@@ -9,7 +9,9 @@ import {
   Alert,
 } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -21,56 +23,61 @@ const ForgotPassword = () => {
       return;
     }
 
-    // TODO: Add actual password reset logic here (Firebase, API, etc.)
+    // TODO: Add real password reset logic
     Alert.alert("Success", "Password reset link sent to your email.");
-    router.back(); // Go back to login screen
+    router.back();
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="flex-1 bg-primary px-6 justify-center">
-        {/* Header */}
-        <Text className="text-white text-4xl font-bold mb-2">Forgot</Text>
-        <Text className="text-white text-4xl font-bold mb-6">Password?</Text>
+    <SafeAreaView className="flex-1 bg-primary">
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View className="flex-1 px-6">
+          {/* Back Button + Title */}
+          <View className="flex-row items-center mt-4 mb-8">
+            <TouchableOpacity
+              onPress={() => router.back()}
+              className="p-2 bg-zinc-800/80 rounded-full mr-4"
+              activeOpacity={0.7}
+            >
+              <Ionicons name="chevron-back" size={22} color="white" />
+            </TouchableOpacity>
+            <Text className="text-white text-2xl font-bold">Forgot Password</Text>
+          </View>
 
-        <Text className="text-gray-400 mb-6">
-          Enter your email below and we’ll send you instructions to reset your
-          password.
-        </Text>
+          {/* Description */}
+          <Text className="text-gray-400 text-base mb-6 leading-relaxed">
+            Enter your email below and we’ll send you instructions to reset your password.
+          </Text>
 
-        {/* Email Input */}
-        <Text className="text-gray-400 mb-1">EMAIL</Text>
-        <View className="flex-row items-center border-b border-gray-700 mb-6 pb-2">
-          <Feather name="mail" size={18} color="#9CA3AF" />
-          <TextInput
-            placeholder="Enter your email"
-            placeholderTextColor="#6B7280"
-            value={email}
-            onChangeText={setEmail}
-            className="ml-2 text-white flex-1"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+          {/* Email Label */}
+          <Text className="text-gray-400 text-sm font-semibold mb-1">EMAIL</Text>
+
+          {/* Email Input */}
+          <View className="flex-row items-center border-b border-zinc-700 pb-2 mb-8">
+            <Feather name="mail" size={18} color="#9CA3AF" />
+            <TextInput
+              placeholder="Enter your email"
+              placeholderTextColor="#6B7280"
+              value={email}
+              onChangeText={setEmail}
+              className="ml-2 text-white flex-1 text-base"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+
+          {/* Reset Button */}
+          <TouchableOpacity
+            className="bg-accent py-3 rounded-md"
+            onPress={handleResetPassword}
+          >
+            <Text className="text-white text-center tracking-wider font-semibold">
+              RESET PASSWORD
+            </Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Reset Button */}
-        <TouchableOpacity
-          className="bg-white py-3 rounded-md mb-6"
-          onPress={handleResetPassword}
-        >
-          <Text className="text-black text-center tracking-widest font-semibold">
-            RESET PASSWORD
-          </Text>
-        </TouchableOpacity>
-
-        {/* Back to Login */}
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text className="text-white text-center">
-            Back to <Text className="text-red-500">Login</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 };
 

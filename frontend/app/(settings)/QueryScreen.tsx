@@ -109,6 +109,7 @@ const QueryScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#18181B' }}>
+      
       <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={["#18181B", "#09090B"]}
@@ -119,13 +120,13 @@ const QueryScreen = () => {
        <View className="flex-row items-center mb-6 space-x-4">
         <TouchableOpacity 
           onPress={() => router.back()}
-          className="p-2 bg-zinc-800/80 rounded-full"
+          className="p-2 bg-zinc-800/80 rounded-full ml-3"
           activeOpacity={0.7}
         >
-          <Ionicons name="chevron-back" size={22} color="white" />
+          <Ionicons name="chevron-back" size={18} color="white" />
         </TouchableOpacity>
         
-        <Text className="text-white text-2xl font-bold">Support</Text>
+        <Text className="text-white text-2xl font-bold"> Support</Text>
       </View>
 
       <KeyboardAvoidingView

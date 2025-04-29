@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from "expo-router";
+import { Link } from "expo-router";
+import { useRouter } from 'expo-router';
 
 const EditProfileScreen = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +16,9 @@ const EditProfileScreen = () => {
   
   const [profileImage, setProfileImage] = useState('https://placehold.co/150x150');
   const [grindImage, setGrindImage] = useState('https://placehold.co/150x150?text=Grind');
+
+  
+const router = useRouter();
   
   // Character count for bio
   const bioCharCount = formData.bio.length;
@@ -53,9 +58,6 @@ const EditProfileScreen = () => {
     Alert.alert('Success', 'Profile updated successfully!');
   };
 
-  const handleChangePassword = () => {
-    Alert.alert('Password', 'Navigate to password change screen');
-  };
 
   return (
     <SafeAreaView className="flex-1 bg-primary">
@@ -65,16 +67,16 @@ const EditProfileScreen = () => {
         className="px-5"
       >
         {/* Header */}
-        <View className="flex-row items-center mb-6 space-x-4">
+        <View className="flex-row items-center mb-4 space-x-4">
          <TouchableOpacity 
            onPress={() => router.back()}
            className="p-2 bg-zinc-800/80 rounded-full"
            activeOpacity={0.7}
          >
-           <Ionicons name="chevron-back" size={22} color="white" />
+           <Ionicons name="chevron-back" size={18} color="white" />
          </TouchableOpacity>
          
-         <Text className="text-white text-2xl font-bold">Edit Profile</Text>
+         <Text className="text-white text-2xl font-bold"> Edit Profile</Text>
        </View>
 
         {/* Profile Pictures */}
@@ -121,12 +123,12 @@ const EditProfileScreen = () => {
         </View>
 
         {/* Input Fields Section */}
-        <View className="rounded-2xl bg-[#1C1C1E] p-5 mb-6">
+        <View className="rounded-2xl bg-[#1C1C1E] p-3 mb-6">
           {/* Full Name */}
           <View className="mb-6">
             <View className="flex-row justify-between mb-2">
               <Text className="text-gray-300 font-medium">Full Name</Text>
-              <Feather name="user" size={16} color="#FF3B30" />
+              {/* <Feather name="user" size={16} color="#EF4444" /> */}
             </View>
             <TextInput
               placeholder="Enter your full name"
@@ -141,7 +143,7 @@ const EditProfileScreen = () => {
           <View className="mb-6">
             <View className="flex-row justify-between mb-2">
               <Text className="text-gray-300 font-medium">Username</Text>
-              <Feather name="at-sign" size={16} color="#FF3B30" />
+              {/* <Feather name="at-sign" size={16} color="#EF4444" /> */}
             </View>
             <TextInput
               placeholder="Choose a username"
@@ -156,7 +158,7 @@ const EditProfileScreen = () => {
           <View>
             <View className="flex-row justify-between mb-2">
               <Text className="text-gray-300 font-medium">Bio</Text>
-              <Feather name="edit-3" size={16} color="#FF3B30" />
+              {/* <Feather name="edit-3" size={16} color="#EF4444" /> */}
             </View>
             <View className="bg-[#2C2C2E] rounded-xl px-4 py-3 relative">
               <TextInput
@@ -181,26 +183,28 @@ const EditProfileScreen = () => {
         <View className="rounded-2xl bg-[#1C1C1E] p-5 mb-6">
           <TouchableOpacity 
             className="flex-row justify-between items-center py-3"
-            onPress={handleChangePassword}
+            onPress={() => router.push('/components/ForgotPassword')}
           >
             <View className="flex-row items-center">
-              <Feather name="lock" size={18} color="#FF3B30" className="mr-3" />
+              <Feather name="lock" size={18} color="#999999" className="mr-3" />
               <Text className="text-white font-medium">Change Password</Text>
+             
             </View>
             <Ionicons name="chevron-forward" size={20} color="gray" />
           </TouchableOpacity>
           
-          <TouchableOpacity className="flex-row justify-between items-center py-3">
+          <TouchableOpacity className="flex-row justify-between items-center py-3" onPress={() => router.push('/(settings)/PrivacySettings')}>
             <View className="flex-row items-center">
-              <MaterialIcons name="privacy-tip" size={18} color="#FF3B30" className="mr-3" />
+              <MaterialIcons name="privacy-tip" size={18} color="#999999" className="mr-3" />
               <Text className="text-white font-medium">Privacy Settings</Text>
+              
             </View>
             <Ionicons name="chevron-forward" size={20} color="gray" />
           </TouchableOpacity>
           
-          <TouchableOpacity className="flex-row justify-between items-center py-3">
+          <TouchableOpacity className="flex-row justify-between items-center py-3"  onPress={() => router.push('/(settings)/NotificationPreferences')}>
             <View className="flex-row items-center">
-              <Feather name="bell" size={18} color="#FF3B30" className="mr-3" />
+              <Feather name="bell" size={18} color="#999999" className="mr-3" />
               <Text className="text-white font-medium">Notification Preferences</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="gray" />

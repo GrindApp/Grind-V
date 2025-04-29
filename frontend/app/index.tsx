@@ -24,6 +24,7 @@ export default function Index() {
       <Link href={"/(onboarding)/house_rules"}>house</Link>
       <Link href={"/(onboarding)/name"}>name</Link>
       <Link href={"/(tabs)/(fitness-dashboard)/fitness-dasboard"}>Dashbaord</Link>
+      <Link href={"/(onboarding)/final-welcome"}>Final-welcome</Link>
       
       
     </View>
